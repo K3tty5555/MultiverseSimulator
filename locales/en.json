@@ -1,0 +1,142 @@
+{
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "completed": "Completed",
+    "processing": "Processing",
+    "pending": "Pending",
+    "failed": "Failed",
+    "unknown": "Unknown",
+    "unknownError": "Unknown error",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry",
+    "noData": "No data",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "meta": {
+    "title": "Life Planner",
+    "description": "Simulate every path at life's crossroads with AI"
+  },
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "newDecision": "New Decision"
+  },
+  "home": {
+    "tagline": "Simulate every path at life's crossroads with AI",
+    "heroTitle1": "Describe your situation",
+    "heroTitle2": "Simulate every future",
+    "heroDesc": "Life Planner helps you systematically simulate possible outcomes for each path before a major decision, providing well-grounded recommendations.",
+    "newDecision": "Start New Decision",
+    "historyTitle": "Decision History",
+    "noHistory": "No decisions yet",
+    "profileIncomplete": "Complete your profile for more accurate simulations",
+    "goToProfile": "Complete Profile",
+    "statusDraft": "Draft",
+    "statusClarifying": "Clarifying",
+    "statusSimulating": "Simulating",
+    "statusReporting": "Generating Report",
+    "statusDone": "Done"
+  },
+  "profile": {
+    "title": "Personal Profile",
+    "subtitle": "A complete profile leads to more accurate simulations",
+    "basicInfo": "Basic Info",
+    "name": "Name",
+    "age": "Age",
+    "career": "Career / Industry",
+    "family": "Family Situation",
+    "location": "City",
+    "valuesTitle": "Values Weights",
+    "valuesDesc": "Drag sliders to set importance of each dimension",
+    "valueCareer": "Career Growth",
+    "valueFinance": "Financial Security",
+    "valueRelationships": "Relationships",
+    "valueWellbeing": "Wellbeing",
+    "valueFreedom": "Freedom",
+    "dataSourcesTitle": "Data Sources",
+    "claudeImport": "Import from Claude History",
+    "claudeImportDesc": "Auto-read conversation and memory files from ~/.claude/",
+    "claudeImportBtn": "Import Claude History",
+    "claudeImporting": "Reading...",
+    "claudeImportDone": "Import complete",
+    "uploadFiles": "Upload Files",
+    "uploadDesc": "Chat exports, resume, journal entries (PDF, TXT, MD)",
+    "uploadedFiles": "Uploaded Files",
+    "synthesize": "Re-synthesize Profile Summary",
+    "synthesizing": "Synthesizing...",
+    "lastSynthesized": "Last synthesized",
+    "saveProfile": "Save Profile",
+    "saved": "Saved"
+  },
+  "decision": {
+    "title": "Decision Simulation",
+    "newTitle": "New Decision",
+    "steps": ["Describe Situation", "AI Clarification", "Path Simulation", "Report", "Deep Exploration"]
+  },
+  "step1": {
+    "title": "Describe Your Decision",
+    "situationLabel": "What choice are you facing?",
+    "situationPlaceholder": "Describe your situation, context, and the options you're considering...",
+    "optionsTitle": "Options",
+    "optionPlaceholder": "Describe this option...",
+    "addOption": "+ Add Option",
+    "minOptions": "At least 2 options required",
+    "decisionTitle": "Decision Title",
+    "titlePlaceholder": "Give this decision a name",
+    "startClarify": "Next: AI Clarification"
+  },
+  "step2": {
+    "title": "AI Clarification",
+    "subtitle": "Answer these questions to help AI simulate more accurately",
+    "inputPlaceholder": "Type your answer...",
+    "send": "Send",
+    "startSimulation": "Start Simulation",
+    "allAnswered": "All questions answered"
+  },
+  "step3": {
+    "title": "Path Simulation",
+    "subtitle": "Simulating possible outcomes for each path...",
+    "dimensions": {
+      "career": "Career",
+      "finance": "Finance",
+      "relationships": "Relationships",
+      "wellbeing": "Wellbeing"
+    },
+    "timeHorizons": {
+      "short_term": "Short-term (1yr)",
+      "mid_term": "Mid-term (3-5yr)",
+      "long_term": "Long-term (10yr+)"
+    },
+    "generating": "Simulating...",
+    "viewReport": "View Report"
+  },
+  "step4": {
+    "title": "Recommendation Report",
+    "generating": "Generating report...",
+    "recommendation": "Recommended Option",
+    "deepExplore": "Deep Exploration"
+  },
+  "step5": {
+    "title": "Deep Exploration",
+    "subtitle": "Ask follow-up questions, adjust assumptions",
+    "inputPlaceholder": "Ask a question...",
+    "send": "Send"
+  },
+  "main": {
+    "layoutTree": "Decision Tree",
+    "layoutSplit": "Split",
+    "layoutWorkbench": "Workbench"
+  },
+  "progress": {
+    "taskComplete": "Task complete",
+    "taskFailed": "Task failed"
+  }
+}

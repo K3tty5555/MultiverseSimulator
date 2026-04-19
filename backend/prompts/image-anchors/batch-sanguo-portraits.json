@@ -1,0 +1,137 @@
+{
+  "jobs": 3,
+  "tasks": [
+    {
+      "id": "portrait-zhugeliang",
+      "promptFiles": ["portrait-zhugeliang.md"],
+      "image": "../../../frontend/public/art/portrait-zhugeliang.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-caocao",
+      "promptFiles": ["portrait-caocao.md"],
+      "image": "../../../frontend/public/art/portrait-caocao.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-guanyu",
+      "promptFiles": ["portrait-guanyu.md"],
+      "image": "../../../frontend/public/art/portrait-guanyu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-zhangfei",
+      "promptFiles": ["portrait-zhangfei.md"],
+      "image": "../../../frontend/public/art/portrait-zhangfei.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-zhaoyun",
+      "promptFiles": ["portrait-zhaoyun.md"],
+      "image": "../../../frontend/public/art/portrait-zhaoyun.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-zhouyu",
+      "promptFiles": ["portrait-zhouyu.md"],
+      "image": "../../../frontend/public/art/portrait-zhouyu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-lusu",
+      "promptFiles": ["portrait-lusu.md"],
+      "image": "../../../frontend/public/art/portrait-lusu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-huanggai",
+      "promptFiles": ["portrait-huanggai.md"],
+      "image": "../../../frontend/public/art/portrait-huanggai.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-sunquan",
+      "promptFiles": ["portrait-sunquan.md"],
+      "image": "../../../frontend/public/art/portrait-sunquan.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-liudu",
+      "promptFiles": ["portrait-liudu.md"],
+      "image": "../../../frontend/public/art/portrait-liudu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    },
+    {
+      "id": "portrait-jinxuan",
+      "promptFiles": ["portrait-jinxuan.md"],
+      "image": "../../../frontend/public/art/portrait-jinxuan.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png",
+        "/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png"
+      ]
+    }
+  ]
+}

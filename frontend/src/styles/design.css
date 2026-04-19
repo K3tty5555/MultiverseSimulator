@@ -1,0 +1,635 @@
+/* Claude Design System Tokens */
+:root {
+  /* Colors */
+  --c-parchment:    #f5f4ed;
+  --c-ivory:        #faf9f5;
+  --c-white:        #ffffff;
+  --c-near-black:   #141413;
+  --c-dark-surface: #30302e;
+  --c-deep-dark:    #141413;
+
+  --c-terracotta:        #c96442;
+  --c-terracotta-dark:   #b8573a;  /* hover / pressed */
+  --c-terracotta-tint:   #fdf5f2;  /* light fill on hover */
+  --c-terracotta-bg:     #fdf4ef;  /* 完成态背景（更深的暖粉底） */
+  --c-terracotta-border: #e8b89e;  /* 完成态边框 */
+  --c-coral:           #d97757;
+  --c-warm-sand:    #e8e6dc;
+  --c-charcoal:     #4d4c48;
+  --c-olive-gray:   #5e5d59;
+  --c-stone-gray:   #87867f;
+  --c-dark-warm:    #3d3d3a;
+  --c-warm-silver:  #b0aea5;
+
+  --c-border-cream: #f0eee6;
+  --c-border-warm:  #e8e6dc;
+  --c-border-dark:  #30302e;
+  --c-ring:         #d1cfc5;
+  --c-focus-blue:   #3898ec;
+
+  /* Typography */
+  --font-serif: 'Georgia', 'Noto Serif SC', serif;
+  --font-sans:  'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Courier New', monospace;
+
+  /* Radius */
+  --r-xs:  4px;
+  --r-sm:  6px;
+  --r-md:  8px;
+  --r-lg:  12px;
+  --r-xl:  16px;
+  --r-2xl: 24px;
+  --r-3xl: 32px;
+
+  /* Shadows */
+  --shadow-ring:            0px 0px 0px 1px var(--c-ring);
+  --shadow-whisper:         rgba(0,0,0,0.05) 0px 4px 24px;
+  --shadow-card:            rgba(0,0,0,0.05) 0px 4px 24px, 0px 0px 0px 1px var(--c-border-cream);
+  --shadow-lift:            0 1px 3px rgba(0,0,0,0.1);
+  --shadow-modal:           0 8px 32px rgba(0,0,0,0.18);
+  --shadow-toast:           0 4px 20px rgba(0,0,0,0.15);
+  --shadow-terracotta-ring: 0 0 0 3px rgba(201,100,66,0.18);
+
+  /* Spacing */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-7:  28px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Semantic status colors */
+  --c-warning-bg:     #fff7ed;
+  --c-warning-border: #fed7aa;
+  --c-warning-text:   #9a3412;
+  --c-warning-sub:    #c2410c;
+
+  --c-info-bg:        #eff6ff;
+  --c-info-border:    #bfdbfe;
+  --c-info-text:      #1d4ed8;
+
+  --c-success-bg:     #f0fdf4;
+  --c-success-border: #bbf7d0;
+  --c-success-text:   #16a34a;
+  --c-success-dark:   #166534;  /* 深绿，用于 ok 状态图标 */
+
+  --c-danger-bg:      #fef2f2;
+  --c-danger-border:  #fecaca;
+  --c-danger-text:    #b91c1c;
+  --c-danger-hover:   #fee2e2;
+  --c-danger-strong:  #dc2626;
+
+  /* Overlay（YearFlip 等深色沉浸式覆盖层） */
+  --c-overlay-dark: #1c1a14;  /* 深暖黑背景 */
+  --c-overlay-text: #f0ece0;  /* 暖白文字 */
+  /* 按钮 spinner 的白环（用于 btn-primary / btn-universe 等深底色按钮的加载指示） */
+  --c-spinner-ring:        rgba(255, 255, 255, 0.4);
+  --c-spinner-ring-strong: #fff;
+
+  /* Builtin / historical badge（内置角色、历史节点高亮） */
+  --c-builtin-bg:     #f5f0e8;
+  --c-builtin-text:   #8b6914;
+  --c-builtin-border: #d4b96a;
+
+  /* Sky（"我自己"角色徽章） */
+  --c-sky-bg:   #e0f2fe;
+  --c-sky-text: #0369a1;
+
+  /* Tag colors */
+  --c-tag-retro-bg:    #f5eeff;
+  --c-tag-retro-text:  #5b21b6;
+  --c-tag-persona-bg:  #fef3c7;
+  --c-tag-persona-text:#92400e;
+  --c-tag-amber-bg:    #fef3e2;
+  --c-tag-amber-text:  #9a5c00;
+  --c-tag-blue-bg:     #e8f0fe;
+  --c-tag-blue-text:   #1a56db;
+  --c-tag-green-bg:        #edf5ec;
+  --c-tag-green-bg-hover:  #d8ead7;
+  --c-tag-green-text:      #3a6b37;
+
+  /* 对手立场色（叙事 adversary，不用 danger-hover 避免"报错"语义） */
+  --c-adversary-bg:   #f5e6e0;
+  --c-adversary-text: #8a3a2e;
+
+  /* z-index stack（数字越大越靠上） */
+  --z-modal:         300;   /* Manager / WorldDetail modal / UniverseAgentManager */
+  --z-modal-confirm: 1000;  /* 叠加在 Modal 之上的 ConfirmModal */
+  --z-overlay-high:  9000;  /* YearFlipOverlay 沉浸式全屏 */
+
+  /* ── Art Deco 金色系（重返未来1999 × Claude 融合风格核心） ── */
+  --c-gold-primary:    #d4a574;  /* 主金：装饰边框、进度填充 */
+  --c-gold-light:      #e8c9a0;  /* 浅金：背景高亮 */
+  --c-gold-dark:       #a67c52;  /* 深金：压暗/阴影 */
+  --c-gold-tint:       #faf4ec;  /* 金色底色（极浅） */
+
+  /* ── 琥珀色（历史感/过去时态） ── */
+  --c-amber-deep:      #8b6f47;  /* 深琥珀：past 节点主色 */
+  --c-amber-warm:      #b8956a;  /* 暖琥珀：中间调 */
+
+  /* ── 酒红色（严肃/重要标题） ── */
+  --c-burgundy:        #5d3a2e;
+  --c-burgundy-light:  #8b5a3c;
+
+  /* ── 语义时态色（时间线节点） ── */
+  --c-past:            var(--c-amber-deep);   /* 过去节点 */
+  --c-now:             var(--c-gold-primary); /* 当下标记 */
+  --c-future:          var(--c-terracotta);   /* 未来节点 */
+
+  /* ── 金色阴影 ── */
+  --shadow-gold-glow:  0 0 16px rgba(212, 165, 116, 0.25);
+  --shadow-gold-ring:  0 0 0 2px var(--c-gold-primary);
+  --shadow-float:      0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-inset:      inset 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  /* ── 新增边框 ── */
+  --c-border-gold:     #d4a574;
+
+  /* ── 排版阶梯（标准化字号/字重/行高） ── */
+  --font-serif-alt: 'EB Garamond', 'Noto Serif SC', serif; /* 高端衬线，大标题 */
+
+  --fs-h1: 32px;   --fw-h1: 600;  --lh-h1: 1.2;
+  --fs-h2: 24px;   --fw-h2: 600;  --lh-h2: 1.25;
+  --fs-h3: 20px;   --fw-h3: 600;  --lh-h3: 1.3;
+  --fs-h4: 16px;   --fw-h4: 600;  --lh-h4: 1.35;
+  --fs-body-lg: 15px;  --lh-body-lg: 1.6;
+  --fs-body:    14px;  --lh-body:    1.6;
+  --fs-body-sm: 13px;  --lh-body-sm: 1.5;
+  --fs-label:   12px;  --fw-label: 500;  --lh-label: 1.4;
+  --fs-caption: 11px;  --fw-caption: 500;  --lh-caption: 1.4;
+
+  /* ── 动效 Token（统一过渡速度和缓动函数） ── */
+  --duration-fast:   150ms;
+  --duration-base:   200ms;
+  --duration-slow:   300ms;
+  --duration-slower: 500ms;
+  --ease-out:        cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-back:   cubic-bezier(0.34, 1.56, 0.64, 1);   /* 有弹性的出现 */
+  --ease-in-back:    cubic-bezier(0.36, 0, 0.66, -0.56);  /* 有弹性的消失 */
+
+  /* ── 美术素材（生成后挂载） ── */
+  --img-hero:     url('/art/archive-desk-hero.png');
+  --img-welcome:  url('/art/universe-welcome.png');
+  --img-timeline: url('/art/timeline-node.png');
+  --img-yearflip: url('/art/yearflip-bg.png');
+  --img-insights: url('/art/insights-deco.png');
+
+  /* ═══════════════════════════════════════════════════════════════════
+     Vintage Archival Magical Realism（重返未来 1999 × 档案室风格锚）
+     核心叙事：1920s 大学档案室 / 研究员俯瞰多元宇宙
+     Style anchor: Art Nouveau linework + Art Deco geometry,
+                   sepia-toned archival photography, vintage film grain,
+                   magical realism, 1920s–1960s European academia
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* ── 档案调色板（1999 暗沉暖色） ── */
+  --c-umber:          #6b4f35;  /* 深棕 - 档案主色、档案柜木质 */
+  --c-umber-deep:     #3d2e1f;  /* 深炭棕 - 深色背景 */
+  --c-sepia:          #8b6f50;  /* 褐黄 - 照片褪色 */
+  --c-sepia-light:    #c9b091;  /* 浅褐 - 纸张泛黄 */
+  --c-oxblood:        #6b2e2a;  /* 牛血红 - 印章、书脊 */
+  --c-oxblood-dark:   #4a1f1c;  /* 深血红 - 蜡封 */
+  --c-deep-teal:      #2d4a47;  /* 墨绿 - 皮革书脊、学院配色 */
+  --c-deep-teal-soft: #4a6b68;  /* 淡墨绿 - hover */
+  --c-tarnished-gold: #a8894e;  /* 暗金 - 旧金属装饰（比 gold-dark 更哑光） */
+  --c-brass:          #8b7340;  /* 黄铜 - 古董器皿 */
+  --c-ivory-aged:     #e8dfc8;  /* 老象牙 - 档案纸张 */
+  --c-dust:           #b8a98a;  /* 尘色 - 光束雾气 */
+
+  /* ── 胶片与档案质感阴影 ── */
+  --shadow-archive:    0 2px 12px rgba(61, 46, 31, 0.15), inset 0 0 0 1px rgba(168, 137, 78, 0.2);
+  --shadow-letterbox:  inset 0 12px 24px -12px rgba(20, 15, 10, 0.35), inset 0 -12px 24px -12px rgba(20, 15, 10, 0.35);
+  --shadow-paper-edge: 0 0 0 1px rgba(107, 79, 53, 0.12), 0 1px 0 rgba(255,255,255,0.3) inset, 0 8px 24px rgba(61, 46, 31, 0.08);
+  --shadow-gold-deep:  0 0 24px rgba(168, 137, 78, 0.35);
+  --shadow-oxblood-seal: 0 2px 6px rgba(107, 46, 42, 0.4);
+
+  /* ── 边框（档案质感） ── */
+  --c-border-archive:    #c9b091;  /* 老纸张边 */
+  --c-border-sepia:      #8b6f50;  /* 褐色线条 */
+  --c-border-oxblood:    #6b2e2a;  /* 血色装饰 */
+  --c-border-tarnished:  #a8894e;  /* 暗金边框 */
+
+  /* ── 胶片颗粒与纸张纹理（CSS 可用的轻量化实现，真正重纹理走 PNG） ── */
+  --texture-grain: radial-gradient(ellipse at 30% 20%, rgba(168, 137, 78, 0.03) 0%, transparent 50%),
+                   radial-gradient(ellipse at 70% 80%, rgba(61, 46, 31, 0.04) 0%, transparent 50%);
+  --texture-vignette: radial-gradient(ellipse at center, transparent 40%, rgba(61, 46, 31, 0.15) 100%);
+
+  /* ── 语义映射（新定位下，旧 token 保留兼容） ── */
+  --c-archive-bg:     var(--c-ivory-aged);   /* 档案卡片底色 */
+  --c-archive-ink:    var(--c-umber-deep);   /* 档案正文字 */
+  --c-archive-accent: var(--c-oxblood);      /* 档案章/印 */
+  --c-archive-gold:   var(--c-tarnished-gold);/* 档案描金 */
+
+  /* ── 文生图四锚 prompt 前缀（在组件中 JS 拼接时使用） ── */
+  /* 注：这些是字符串注释供开发参考，实际 prompt 在 backend/app/utils/image_gen.py 中 */
+}
+
+/* ─── 共享卡片外观（全局，供 scoped 组件通过 class 拼接使用） ─────────── */
+.lp-card-surface {
+  background: var(--c-ivory);
+  border: 1px solid var(--c-border-cream);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+  box-shadow: var(--shadow-whisper);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+/* ─── 共享表单原语（供 scoped 组件直接使用，避免多处重复定义） ─────────── */
+.lp-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-4);
+}
+.lp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.lp-field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-charcoal);
+}
+.lp-field-optional {
+  font-weight: 400;
+  color: var(--c-stone-gray);
+}
+.lp-field-hint-small {
+  font-size: 11px;
+  color: var(--c-stone-gray);
+}
+.lp-form-actions {
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: flex-end;
+  margin-top: var(--sp-4);
+}
+.lp-form-error {
+  padding: 10px 14px;
+  background: var(--c-danger-bg);
+  border: 1px solid var(--c-danger-border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--c-danger-text);
+  margin-bottom: var(--sp-3);
+}
+.lp-type-toggle {
+  display: flex;
+  gap: var(--sp-2);
+  background: var(--c-warm-sand);
+  border-radius: var(--r-lg);
+  padding: 3px;
+  width: fit-content;
+}
+.lp-type-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: calc(var(--r-lg) - 2px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-olive-gray);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lp-type-btn:hover { color: var(--c-charcoal); }
+.lp-type-btn.active {
+  background: var(--c-ivory);
+  color: var(--c-near-black);
+  box-shadow: var(--shadow-ring);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   档案风格通用原语（Vintage Archival Magical Realism）
+   供首页及子页面共用
+   ══════════════════════════════════════════════════════════════ */
+
+.lp-panel {
+  position: relative;
+  /* 纸卡：提高不透明度到 0.90，字清晰；blur 加到 10px 让桌面细节变氛围而非视觉干扰 */
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(168, 137, 78, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(107, 79, 53, 0.05) 0%, transparent 50%),
+    rgba(244, 236, 216, 0.90);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border: 1px solid rgba(139, 111, 80, 0.45);
+  border-radius: 3px;
+  box-shadow:
+    0 12px 36px rgba(20, 15, 10, 0.55),
+    0 2px 8px rgba(20, 15, 10, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 0 1px rgba(168, 137, 78, 0.22);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.lp-panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: 1px solid rgba(168, 137, 78, 0.3);
+  flex-shrink: 0;
+}
+.lp-panel-seal {
+  font-size: 16px;
+  color: var(--c-oxblood);
+  line-height: 1;
+}
+.lp-panel-title {
+  font-family: var(--font-serif-alt);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--c-umber-deep);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.lp-panel-hint {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--c-sepia);
+  font-style: italic;
+}
+.lp-panel-spacer { flex: 1; }
+
+/* ── 档案按钮 ── */
+.lp-btn-archive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-serif);
+  padding: 8px 18px;
+  font-size: 13px;
+  background: var(--c-oxblood);
+  color: var(--c-ivory-aged);
+  border: 1px solid var(--c-oxblood-dark);
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: var(--shadow-oxblood-seal);
+  transition: all var(--duration-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lp-btn-archive:hover:not(:disabled) {
+  background: var(--c-oxblood-dark);
+  box-shadow: var(--shadow-oxblood-seal), 0 0 0 2px rgba(168, 137, 78, 0.4);
+}
+.lp-btn-archive:disabled { opacity: 0.6; cursor: not-allowed; }
+.lp-btn-archive--lg { padding: 11px 24px; font-size: 14px; }
+
+.lp-btn-ghost-archive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-serif);
+  padding: 8px 16px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--c-umber);
+  border: 1px solid var(--c-border-sepia);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lp-btn-ghost-archive:hover {
+  background: rgba(139, 111, 80, 0.1);
+  border-color: var(--c-umber);
+  color: var(--c-umber-deep);
+}
+
+.lp-chip-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  padding: 5px 12px;
+  background: var(--c-tarnished-gold);
+  color: var(--c-umber-deep);
+  border: 1px solid var(--c-tarnished-gold);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lp-chip-action:hover {
+  background: var(--c-brass);
+  border-color: var(--c-brass);
+}
+
+/* 深色 panel 变体（shelf 这类底部横架） */
+.lp-panel--ink {
+  background: rgba(30, 22, 16, 0.78);
+  border-color: rgba(168, 137, 78, 0.35);
+}
+.lp-panel--ink .lp-panel-title { color: var(--c-ivory-aged); }
+.lp-panel--ink .lp-panel-hint { color: var(--c-sepia-light); opacity: 0.85; }
+.lp-panel--ink .lp-panel-seal { color: var(--c-tarnished-gold); }
+.lp-panel--ink .lp-panel-head { border-bottom-color: rgba(168, 137, 78, 0.25); }
+
+/* ══════════════════════════════════════════════════════════════
+   档案风顶栏原语（深底卡其边 · 全局复用）
+   各 View 用法: <header class="nav lp-archive-topbar">
+   （保留 .nav 类名用于 macos-app 拖拽区域）
+   ══════════════════════════════════════════════════════════════ */
+.lp-archive-topbar {
+  display: flex; align-items: center;
+  padding: 0 var(--sp-6); height: 60px;
+  background: rgba(45, 32, 22, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(168, 137, 78, 0.35);
+  position: sticky; top: 0; z-index: 50;
+}
+
+.lp-back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 10px;
+  color: var(--c-tarnished-gold);
+  border: 1px solid rgba(168, 137, 78, 0.35);
+  border-radius: 2px;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  flex-shrink: 0;
+}
+.lp-back-btn:hover {
+  background: rgba(168, 137, 78, 0.15);
+  color: var(--c-ivory-aged);
+  border-color: var(--c-tarnished-gold);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   档案风 Modal 原语（全局复用 · 替代各组件自定义 .modal-*）
+   ══════════════════════════════════════════════════════════════ */
+.lp-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20, 15, 10, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--sp-4);
+}
+.lp-modal {
+  background: var(--c-ivory-aged);
+  border: 1px solid var(--c-border-archive);
+  border-radius: 2px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow:
+    var(--shadow-modal),
+    inset 0 2px 0 var(--c-tarnished-gold),
+    inset 0 3px 0 rgba(168, 137, 78, 0.3);
+}
+.lp-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-5) var(--sp-6) 0;
+}
+.lp-modal-title {
+  font-family: var(--font-serif-alt);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--c-umber-deep);
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+.lp-modal-close {
+  width: 30px; height: 30px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--c-sepia);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 2px;
+  transition: all var(--duration-fast);
+}
+.lp-modal-close:hover {
+  border-color: var(--c-border-sepia);
+  background: rgba(139, 111, 80, 0.1);
+  color: var(--c-umber-deep);
+}
+.lp-modal-body {
+  padding: var(--sp-5) var(--sp-6);
+  overflow-y: auto;
+  flex: 1;
+}
+.lp-modal-footer {
+  display: flex; gap: var(--sp-3); justify-content: flex-end;
+  padding: var(--sp-4) var(--sp-6) var(--sp-5);
+  border-top: 1px solid var(--c-border-archive);
+}
+
+/* 档案风 AI 辅助 + Inline spinner 通用原语 */
+.lp-name-assist-row {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.lp-btn-assist {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 12px;
+  background: transparent;
+  border: 1px solid var(--c-tarnished-gold);
+  border-radius: 2px;
+  color: var(--c-tarnished-gold);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--duration-fast);
+}
+.lp-btn-assist:hover:not(:disabled) {
+  background: var(--c-tarnished-gold);
+  color: var(--c-umber-deep);
+}
+.lp-btn-assist:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.lp-btn-inline-spinner {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: lp-btn-spin 0.7s linear infinite;
+}
+@keyframes lp-btn-spin { to { transform: rotate(360deg); } }
+
+/* 档案风输入框（全局，供 modal 和表单内复用） */
+.lp-input-archive {
+  padding: 9px 12px;
+  background: var(--c-ivory);
+  border: 1px solid var(--c-border-archive);
+  border-radius: 2px;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--c-umber-deep);
+  transition: all var(--duration-fast);
+}
+.lp-input-archive::placeholder {
+  font-style: italic;
+  color: var(--c-sepia);
+  opacity: 0.7;
+}
+.lp-input-archive:focus {
+  outline: none;
+  border-color: var(--c-tarnished-gold);
+  box-shadow: 0 0 0 2px rgba(168, 137, 78, 0.25);
+}
+
+/* ============ 深色模式 Token 预留 ============ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-parchment:  #2a2825;
+    --c-ivory:      #3d3a35;
+    --c-near-black: #f0ece0;
+    --c-warm-sand:  #3a3832;
+    --c-charcoal:   #d4d0c8;
+    --c-olive-gray: #b8b5ad;
+    --c-stone-gray: #8a8780;
+    --c-border-cream: #3d3a35;
+    --c-border-warm:  #4a4742;
+    /* terracotta/gold 保持不变以保证视觉识别性 */
+  }
+}
+
+/* ============ 移动端响应式 ============ */
+@media (max-width: 640px) {
+  /* ProfileView 表单单列 */
+  .form-grid { grid-template-columns: 1fr !important; }
+
+/* Hero 流程图换行友好 */
+  .hero-how { flex-direction: column; align-items: flex-start; }
+  .how-sep { display: none; }
+
+  /* 矩阵表格在小屏允许横滚 */
+  .matrix { overflow-x: auto; }
+
+  /* 聊天气泡宽度放宽 */
+  .msg-bubble { max-width: 88% !important; }
+}

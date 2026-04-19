@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人生规划器</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 340px;
+      height: 240px;
+      background: #f5f4ed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-family: -apple-system, 'Noto Sans SC', sans-serif;
+      user-select: none;
+      -webkit-app-region: drag;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-name {
+      font-family: Georgia, 'Noto Serif SC', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a18;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: #8a8778;
+      letter-spacing: 0.04em;
+    }
+
+    /* 旋转环 */
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 2.5px solid #e8e6de;
+      border-top-color: #c96442;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 12px;
+      color: #8a8778;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <span class="brand-name">人生规划器</span>
+    <span class="brand-tagline">AI 人生决策推演工具</span>
+  </div>
+  <div class="spinner"></div>
+  <span class="loading-text">正在启动…</span>
+</body>
+</html>

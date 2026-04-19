@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.uv/
+
+# Environment
+.env
+.env.*
+!.env.*.example
+backend/data/
+backend/logs/
+backend/*.db
+
+# Node
+node_modules/
+frontend/dist/
+
+# Electron / PyInstaller 构建产物
+dist-bin/
+release/
+*.spec.bak
+
+# OS
+.DS_Store
+*.swp
+
+# Playwright MCP 临时文件
+.playwright-mcp/
+
+# Claude Code 运行时文件
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

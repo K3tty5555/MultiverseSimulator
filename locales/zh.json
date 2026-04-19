@@ -1,0 +1,142 @@
+{
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "completed": "已完成",
+    "processing": "处理中",
+    "pending": "等待",
+    "failed": "失败",
+    "unknown": "未知",
+    "unknownError": "未知错误",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "retry": "重试",
+    "noData": "暂无数据",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑"
+  },
+  "meta": {
+    "title": "人生规划器",
+    "description": "在人生分岔口，用 AI 推演每一种可能"
+  },
+  "nav": {
+    "home": "首页",
+    "profile": "个人档案",
+    "newDecision": "新建决策"
+  },
+  "home": {
+    "tagline": "在人生分岔口，用 AI 推演每一种可能",
+    "heroTitle1": "描述你的处境",
+    "heroTitle2": "推演每一种未来",
+    "heroDesc": "人生规划器帮助你在重要抉择前，系统性地推演每条路径的可能结果，给出有据可依的建议。",
+    "newDecision": "开始新决策",
+    "historyTitle": "决策历史",
+    "noHistory": "还没有任何决策记录",
+    "profileIncomplete": "请先完善个人档案，以获得更精准的推演结果",
+    "goToProfile": "完善档案",
+    "statusDraft": "草稿",
+    "statusClarifying": "澄清中",
+    "statusSimulating": "推演中",
+    "statusReporting": "生成报告",
+    "statusDone": "已完成"
+  },
+  "profile": {
+    "title": "个人档案",
+    "subtitle": "档案越完整，推演结果越精准",
+    "basicInfo": "基本信息",
+    "name": "姓名",
+    "age": "年龄",
+    "career": "职业/行业",
+    "family": "家庭状况",
+    "location": "所在城市",
+    "valuesTitle": "价值观权重",
+    "valuesDesc": "拖动滑块设置各维度对你的重要程度",
+    "valueCareer": "事业发展",
+    "valueFinance": "财务安全",
+    "valueRelationships": "人际关系",
+    "valueWellbeing": "身心健康",
+    "valueFreedom": "自由度",
+    "dataSourcesTitle": "数据来源",
+    "claudeImport": "从 Claude 历史导入",
+    "claudeImportDesc": "自动读取 ~/.claude/ 目录中的对话记录和记忆文件",
+    "claudeImportBtn": "导入 Claude 历史",
+    "claudeImporting": "正在读取...",
+    "claudeImportDone": "导入完成",
+    "uploadFiles": "上传文件",
+    "uploadDesc": "支持聊天记录导出、简历、日记等文件（PDF、TXT、MD）",
+    "uploadedFiles": "已上传文件",
+    "synthesize": "重新合成档案摘要",
+    "synthesizing": "合成中...",
+    "lastSynthesized": "上次合成",
+    "saveProfile": "保存档案",
+    "saved": "已保存"
+  },
+  "decision": {
+    "title": "决策推演",
+    "newTitle": "新建决策",
+    "steps": ["描述情境", "AI 澄清", "路径推演", "建议报告", "深度探索"]
+  },
+  "step1": {
+    "title": "描述你的决策情境",
+    "situationLabel": "你面临什么选择？",
+    "situationPlaceholder": "详细描述你的处境、背景和面临的选择...",
+    "optionsTitle": "可选路径",
+    "optionPlaceholder": "描述这个选项...",
+    "addOption": "+ 添加选项",
+    "minOptions": "至少需要 2 个选项",
+    "decisionTitle": "决策标题",
+    "titlePlaceholder": "给这个决策起个名字",
+    "startClarify": "下一步：AI 澄清"
+  },
+  "step2": {
+    "title": "AI 澄清追问",
+    "subtitle": "回答以下问题，帮助 AI 更准确地推演",
+    "inputPlaceholder": "输入你的回答...",
+    "send": "发送",
+    "startSimulation": "开始推演",
+    "allAnswered": "已回答所有问题"
+  },
+  "step3": {
+    "title": "多路径推演",
+    "subtitle": "正在推演每条路径的可能结果...",
+    "dimensions": {
+      "career": "事业发展",
+      "finance": "财务影响",
+      "relationships": "人际关系",
+      "wellbeing": "身心健康"
+    },
+    "timeHorizons": {
+      "short_term": "短期 (1年)",
+      "mid_term": "中期 (3-5年)",
+      "long_term": "长期 (10年+)"
+    },
+    "generating": "推演中...",
+    "viewReport": "查看建议报告"
+  },
+  "step4": {
+    "title": "建议报告",
+    "generating": "正在生成报告...",
+    "recommendation": "推荐选项",
+    "deepExplore": "深度探索"
+  },
+  "step5": {
+    "title": "深度探索",
+    "subtitle": "继续追问，调整假设，深入了解每个选项",
+    "inputPlaceholder": "输入你的问题...",
+    "send": "发送"
+  },
+  "main": {
+    "layoutTree": "决策树",
+    "layoutSplit": "双栏",
+    "layoutWorkbench": "工作台"
+  },
+  "progress": {
+    "taskComplete": "任务完成",
+    "taskFailed": "任务失败"
+  }
+}
