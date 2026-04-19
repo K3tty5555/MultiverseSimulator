@@ -1,16 +1,16 @@
 {
-  "name": "lifeplanner",
+  "name": "multiversesimulator",
   "version": "0.1.0",
-  "description": "人生规划器 — AI 人生决策推演工具",
+  "description": "多元宇宙模拟器 — AI 平行宇宙叙事推演",
   "main": "electron/main.js",
-  "author": "LifePlanner",
+  "author": "MultiverseSimulator",
   "license": "MIT",
   "private": true,
   "scripts": {
     "electron:dev": "ELECTRON_DEV_URL=http://localhost:3000 electron .",
     "electron:flask": "ELECTRON_DEV_URL=http://localhost:5001 electron .",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "build:backend": "cd backend && ../.venv/bin/pyinstaller ../lifeplanner.spec --clean --distpath ../dist-bin",
+    "build:backend": "cd backend && ../.venv/bin/pyinstaller ../multiversesimulator.spec --clean --distpath ../dist-bin",
     "dist:mac": "npm run build:frontend && npm run build:backend && electron-builder --mac",
     "dist:win": "npm run build:frontend && npm run build:backend && electron-builder --win",
     "dist:linux": "npm run build:frontend && npm run build:backend && electron-builder --linux"
@@ -20,9 +20,9 @@
     "electron-builder": "^25.0.0"
   },
   "build": {
-    "appId": "com.lifeplanner.app",
-    "productName": "人生规划器",
-    "copyright": "Copyright © 2025 LifePlanner",
+    "appId": "com.multiversesimulator.app",
+    "productName": "多元宇宙模拟器",
+    "copyright": "Copyright © 2025 MultiverseSimulator",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -33,8 +33,8 @@
     ],
     "extraResources": [
       {
-        "from": "dist-bin/lifeplanner",
-        "to": "lifeplanner",
+        "from": "dist-bin/multiversesimulator",
+        "to": "multiversesimulator",
         "filter": ["**/*"]
       }
     ],
@@ -61,7 +61,7 @@
       "category": "Office"
     },
     "dmg": {
-      "title": "人生规划器",
+      "title": "多元宇宙模拟器",
       "window": { "width": 540, "height": 380 }
     },
     "nsis": {

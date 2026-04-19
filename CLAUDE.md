@@ -1,4 +1,4 @@
-# LifePlanner 项目规范
+# MultiverseSimulator 项目规范
 
 ## 沟通语言
 
@@ -7,7 +7,7 @@
 ## 项目结构
 
 ```
-LifePlanner/
+MultiverseSimulator/
 ├── frontend/        # Vue 3 + Vite，端口 3000
 ├── backend/         # Flask Python，端口 5001
 ├── locales/         # i18n 翻译文件（zh.json / en.json）
@@ -36,26 +36,26 @@ npm run dist:win
 ## Electron 打包说明
 
 ```
-LifePlanner/
+MultiverseSimulator/
 ├── electron/
 │   ├── main.js         # Electron 主进程
 │   ├── preload.js      # 预加载脚本（最小权限）
 │   └── loading.html    # 启动等待画面
-├── lifeplanner.spec    # PyInstaller 打包规格
+├── multiversesimulator.spec    # PyInstaller 打包规格
 ├── package.json        # 根目录：Electron + electron-builder
 └── dist-bin/           # PyInstaller 输出（.gitignore）
-    └── lifeplanner[.exe]
+    └── multiversesimulator[.exe]
 ```
 
 **打包流程：**
 1. `npm run build:frontend` → Vite 构建到 `frontend/dist/`
-2. `npm run build:backend` → PyInstaller 将 Flask + `frontend/dist/` + `locales/` 打包为单一可执行文件 `dist-bin/lifeplanner`
+2. `npm run build:backend` → PyInstaller 将 Flask + `frontend/dist/` + `locales/` 打包为单一可执行文件 `dist-bin/multiversesimulator`
 3. `electron-builder` 将 Electron 壳 + Flask 二进制 → `.dmg` / `.exe`
 
 **数据目录（生产模式）：**
-- macOS：`~/Library/Application Support/LifePlanner/`
-- Windows：`%APPDATA%\LifePlanner\`
-- 通过 `LIFEPLANNER_DATA_DIR` 环境变量覆盖
+- macOS：`~/Library/Application Support/MultiverseSimulator/`
+- Windows：`%APPDATA%\MultiverseSimulator\`
+- 通过 `MULTIVERSESIMULATOR_DATA_DIR` 环境变量覆盖
 
 ## 技术栈
 

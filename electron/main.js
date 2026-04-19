@@ -17,7 +17,7 @@ let loadingWindow = null
 function getFlaskBinary() {
   if (IS_DEV) return null
   const ext = process.platform === 'win32' ? '.exe' : ''
-  return path.join(process.resourcesPath, `lifeplanner${ext}`)
+  return path.join(process.resourcesPath, `multiversesimulator${ext}`)
 }
 
 function pollHealth(port, maxAttempts, interval) {
@@ -55,7 +55,7 @@ async function startFlask() {
     ...process.env,
     FLASK_PORT: String(FLASK_PORT),
     FLASK_DEBUG: 'false',
-    LIFEPLANNER_DATA_DIR: userData,
+    MULTIVERSESIMULATOR_DATA_DIR: userData,
   }
 
   flaskProcess = spawn(binary, [], {
@@ -106,7 +106,7 @@ function createMainWindow() {
     height: 760,
     minWidth: 800,
     minHeight: 600,
-    title: '人生规划器',
+    title: '多元宇宙模拟器',
     show: false,
     backgroundColor: '#f5f4ed',
     titleBarStyle: 'hiddenInset',
@@ -150,7 +150,7 @@ function buildAppMenu() {
     {
       label: app.name,
       submenu: [
-        { role: 'about', label: '关于人生规划器' },
+        { role: 'about', label: '关于多元宇宙模拟器' },
         { type: 'separator' },
         { role: 'services', label: '服务' },
         { type: 'separator' },
@@ -158,7 +158,7 @@ function buildAppMenu() {
         { role: 'hideOthers', label: '隐藏其他' },
         { role: 'unhide', label: '显示全部' },
         { type: 'separator' },
-        { role: 'quit', label: '退出人生规划器' },
+        { role: 'quit', label: '退出多元宇宙模拟器' },
       ],
     },
     {

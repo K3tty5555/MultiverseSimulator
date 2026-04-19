@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec for 人生规划器 backend
-# 运行方式：cd LifePlanner && pyinstaller lifeplanner.spec --clean
+# PyInstaller spec for 多元宇宙模拟器 backend
+# 运行方式：cd MultiverseSimulator && pyinstaller multiversesimulator.spec --clean
 
 import sys
 import os
@@ -85,7 +85,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='lifeplanner',
+    name='multiversesimulator',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
