@@ -69,8 +69,6 @@ class CanonicalEventRepository:
                 )
                 inserted_ids.append(cur.lastrowid)
             conn.commit()
-        # 返回刚插入的
-        with get_db() as conn:
             placeholders = ','.join('?' * len(inserted_ids))
             rows = conn.execute(
                 f"SELECT * FROM character_canonical_events WHERE id IN ({placeholders}) "

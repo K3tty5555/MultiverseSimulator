@@ -39,7 +39,10 @@ const routes = [
     path: '/universe/worlds/:worldId',
     name: 'WorldDetail',
     component: () => import('../views/WorldDetailView.vue'),
-    props: true
+    props: true,
+    beforeEnter: (to) => {
+      if (!to.params.worldId) return '/'
+    },
   },
   {
     path: '/universe/:universeId',

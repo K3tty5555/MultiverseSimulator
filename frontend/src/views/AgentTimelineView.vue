@@ -1,8 +1,8 @@
 <template>
-  <div class="timeline-view">
+  <div class="timeline-view lp-archive-bg-canvas">
     <header class="nav lp-archive-topbar">
       <div class="nav-left">
-        <router-link to="/agents" class="lp-back-btn" aria-label="返角色长廊" title="返角色长廊">
+        <router-link to="/agents" class="lp-back-btn" aria-label="返回角色长廊" title="返回角色长廊">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M10 3 L5 8 L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -16,7 +16,7 @@
     </header>
 
     <div class="content">
-      <div v-if="initialLoading" class="empty-state">翻开卷宗...</div>
+      <div v-if="initialLoading !== false" class="empty-state">翻开卷宗...</div>
 
       <EmptyTimelinePanel
         v-else-if="canonicalEvents.length === 0 && !isGenerating"
@@ -34,6 +34,10 @@
 
       <!-- 主视图：年表 + 分叉 -->
       <div v-else class="canonical-timeline">
+        <div v-if="isGenerating" class="generating-bar">
+          AI 正在重新梳理 {{ decodedName }} 的生平年表… {{ generateElapsed }}s
+        </div>
+
         <ol class="event-list">
           <CanonicalEventCard
             v-for="(ev, idx) in canonicalEvents"
@@ -74,6 +78,7 @@
     <NewUniverseModal
       :show="newUniverseBasedOn !== null"
       :based-on-event="newUniverseBasedOn"
+      :protagonist-name="decodedName"
       :fixed-type="universeType"
       :fixed-world-label="currentWorldLabel"
       @close="newUniverseBasedOn = null"
@@ -96,7 +101,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '../composables/useToast.js'
 import {
-  listCanonicalEvents, generateCanonicalEvents, deleteCanonicalEvent,
+  listCanonicalEvents, generateCanonicalEvents, bulkDeleteCanonicalEvents,
   listUniversesWithAgents,
 } from '../api/universe.js'
 import CanonicalEventEditModal from '../components/CanonicalEventEditModal.vue'
@@ -121,7 +126,7 @@ const typeText = computed(() =>
 
 const canonicalEvents = ref([])
 const universes = ref([])
-const initialLoading = ref(true)
+const initialLoading = ref(null)
 const emptyReason = ref('')
 
 const involvedUniverses = computed(() =>
@@ -161,6 +166,7 @@ const subtitleText = computed(() => {
 const isGenerating = ref(false)
 const generateElapsed = ref(0)
 let genTimerId = null
+let genAbortController = null
 
 function startGenTimer() {
   generateElapsed.value = 0
@@ -174,13 +180,14 @@ async function handleGenerate() {
   if (isGenerating.value) return
   emptyReason.value = ''
   isGenerating.value = true
+  genAbortController = new AbortController()
   startGenTimer()
   try {
     const res = await generateCanonicalEvents({
       name: decodedName.value,
       universe_type: universeType.value,
       world_label: currentWorldLabel.value || '',
-    })
+    }, genAbortController.signal)
     if (res.events && res.events.length > 0) {
       canonicalEvents.value = res.events
       success('已梳理生平年表')
@@ -188,8 +195,10 @@ async function handleGenerate() {
       emptyReason.value = res.reason || 'AI 未能梳理可考证的节点，稍后可重试或手动编辑。'
     }
   } catch (e) {
+    if (e.name === 'AbortError' || e.code === 'ERR_CANCELED') return
     toastError(e?.response?.data?.error || e?.message || '梳理失败，请重试')
   } finally {
+    genAbortController = null
     stopGenTimer()
     isGenerating.value = false
   }
@@ -199,9 +208,12 @@ const confirmRegenerate = ref(false)
 async function handleRegenerate() {
   confirmRegenerate.value = false
   if (isGenerating.value) return
-  const toDelete = canonicalEvents.value.filter(e => !e.is_edited)
   try {
-    for (const e of toDelete) await deleteCanonicalEvent(e.id)
+    await bulkDeleteCanonicalEvents({
+      name: decodedName.value,
+      universe_type: universeType.value,
+      world_label: currentWorldLabel.value || '',
+    })
     canonicalEvents.value = canonicalEvents.value.filter(e => e.is_edited)
     await handleGenerate()
     await reloadCanonical()
@@ -245,13 +257,16 @@ async function reloadCanonical() {
   } catch { /* 静默 */ }
 }
 
+let loadVersion = 0
 async function load() {
+  const version = ++loadVersion
   initialLoading.value = true
   try {
     const [canonRes, univRes] = await Promise.allSettled([
       listCanonicalEvents(decodedName.value, universeType.value, ''),
       listUniversesWithAgents(),
     ])
+    if (version !== loadVersion) return
     if (univRes.status === 'fulfilled') {
       universes.value = univRes.value.universes || []
     }
@@ -273,28 +288,22 @@ async function load() {
       } catch { /* 静默 */ }
     }
   } finally {
-    initialLoading.value = false
+    if (version === loadVersion) initialLoading.value = false
   }
 }
 
 onMounted(load)
-onBeforeUnmount(stopGenTimer)
+onBeforeUnmount(() => {
+  stopGenTimer()
+  if (genAbortController) genAbortController.abort()
+})
 </script>
 
 <style scoped>
 .timeline-view {
   min-height: 100vh;
   background: var(--c-parchment);
-  position: relative;
-  isolation: isolate;
-}
-.timeline-view::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--img-hero, var(--c-umber-deep)) center/cover no-repeat;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 0;
+  --bg-canvas-img: var(--img-hero);
 }
 
 .nav-left { display: flex; align-items: center; gap: var(--sp-4); min-width: 0; }
@@ -331,13 +340,23 @@ onBeforeUnmount(stopGenTimer)
   font-size: 14px;
 }
 
-/* empty-panel 相关 style 已迁移至 EmptyTimelinePanel 子组件 */
-
 .canonical-timeline { display: flex; flex-direction: column; gap: var(--sp-5); }
 .event-list {
   list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column;
   gap: var(--sp-5);
+}
+
+.generating-bar {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-tarnished-gold-ring);
+  border: 1px solid var(--c-tarnished-gold-border);
+  border-radius: var(--r-sm);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--c-sepia);
+  text-align: center;
 }
 
 .regenerate-row {

@@ -65,11 +65,8 @@ def create_app(config_class=Config):
         get_logger('lifeplanner.request').debug(f"→ {response.status_code}")
         return response
 
-    from .api import profile_bp, decision_bp, chat_bp, report_bp, settings_bp, persona_bp, universe_bp, world_bp
+    from .api import profile_bp, settings_bp, persona_bp, universe_bp, world_bp
     app.register_blueprint(profile_bp, url_prefix='/api/profile')
-    app.register_blueprint(decision_bp, url_prefix='/api/decision')
-    app.register_blueprint(chat_bp, url_prefix='/api/chat')
-    app.register_blueprint(report_bp, url_prefix='/api/report')
     app.register_blueprint(settings_bp, url_prefix='/api/settings')
     app.register_blueprint(persona_bp, url_prefix='/api/persona')
     app.register_blueprint(universe_bp, url_prefix='/api/universe')

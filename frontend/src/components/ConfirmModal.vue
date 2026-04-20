@@ -10,7 +10,7 @@
         aria-modal="true"
         :aria-labelledby="labelId"
       >
-        <div class="modal-box">
+        <div ref="modalBox" class="modal-box">
           <div class="modal-seal" aria-hidden="true">{{ danger ? '封' : '令' }}</div>
           <p :id="labelId" class="modal-msg">{{ message }}</p>
           <div class="modal-actions">
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, watch, useId } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, useId } from 'vue'
 
 const props = defineProps({
   show:         Boolean,
@@ -40,6 +40,7 @@ const props = defineProps({
 defineEmits(['confirm', 'cancel'])
 
 const cancelBtn = ref(null)
+const modalBox = ref(null)
 const labelId = useId ? useId() : 'confirm-modal-label'
 
 let previousActiveEl = null
@@ -52,6 +53,25 @@ watch(() => props.show, (val) => {
     previousActiveEl = null
   }
 })
+
+function handleTabTrap(e) {
+  if (!props.show || e.key !== 'Tab') return
+  const box = modalBox.value
+  if (!box) return
+  const focusable = [...box.querySelectorAll('button:not(:disabled)')]
+  if (focusable.length < 2) return
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+onMounted(() => document.addEventListener('keydown', handleTabTrap))
+onBeforeUnmount(() => document.removeEventListener('keydown', handleTabTrap))
 </script>
 
 <style scoped>
@@ -74,7 +94,7 @@ watch(() => props.show, (val) => {
   box-shadow:
     var(--shadow-modal),
     inset 0 2px 0 var(--c-tarnished-gold),
-    inset 0 3px 0 rgba(168, 137, 78, 0.3);
+    inset 0 3px 0 var(--c-tarnished-gold-border);
   max-width: 380px;
   width: 90%;
 }
@@ -141,7 +161,7 @@ watch(() => props.show, (val) => {
 }
 .modal-confirm:hover:not(:disabled) {
   background: var(--c-oxblood-dark);
-  box-shadow: var(--shadow-oxblood-seal), 0 0 0 2px rgba(168, 137, 78, 0.3);
+  box-shadow: var(--shadow-oxblood-seal), 0 0 0 2px var(--c-tarnished-gold-border);
 }
 .modal-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
 

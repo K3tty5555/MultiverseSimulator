@@ -15,14 +15,17 @@ export const listCanonicalEvents = (name, universeType, worldLabel = '') =>
     params: { name, type: universeType, world_label: worldLabel || '' },
   })
 
-export const generateCanonicalEvents = (data) =>
-  api.post('/universe/canonical/events/generate', data)
+export const generateCanonicalEvents = (data, signal) =>
+  api.post('/universe/canonical/events/generate', data, { signal })
 
 export const updateCanonicalEvent = (id, data) =>
   api.put(`/universe/canonical/events/${id}`, data)
 
 export const deleteCanonicalEvent = (id) =>
   api.delete(`/universe/canonical/events/${id}`)
+
+export const bulkDeleteCanonicalEvents = (data) =>
+  api.post('/universe/canonical/events/bulk-delete', data)
 
 export const createUniverse = (data) => api.post('/universe', data)
 

@@ -36,21 +36,6 @@ def init_db(db_path: str):
     with get_db() as conn:
         conn.executescript(_SCHEMA)
 
-        # 迁移：为已有数据库补加新列
-        decision_cols = {row[1] for row in conn.execute("PRAGMA table_info(decisions)")}
-        _DECISION_MIGRATIONS = {
-            'deleted_at':       "ALTER TABLE decisions ADD COLUMN deleted_at TEXT",
-            'decision_type':    "ALTER TABLE decisions ADD COLUMN decision_type TEXT NOT NULL DEFAULT 'planning'",
-            'persona_id':       "ALTER TABLE decisions ADD COLUMN persona_id INTEGER",
-            'actual_choice_id': "ALTER TABLE decisions ADD COLUMN actual_choice_id INTEGER",
-            'actual_outcome':   "ALTER TABLE decisions ADD COLUMN actual_outcome TEXT",
-            'time_period':      "ALTER TABLE decisions ADD COLUMN time_period TEXT",
-            'occurrence_year':  "ALTER TABLE decisions ADD COLUMN occurrence_year INTEGER",
-        }
-        for col, sql in _DECISION_MIGRATIONS.items():
-            if col not in decision_cols:
-                conn.execute(sql)
-
         # 确保默认 self persona 存在（INSERT OR IGNORE 防并发重复）
         now = datetime.now(timezone.utc).isoformat()
         conn.execute(
@@ -207,7 +192,10 @@ def init_db(db_path: str):
                 WHERE checkpoint_id IS NOT NULL AND world_label IS NULL
             """)
         if 'canonical_event_id' not in pu_cols and pu_cols:
-            conn.execute("ALTER TABLE parallel_universes ADD COLUMN canonical_event_id INTEGER")
+            conn.execute(
+                "ALTER TABLE parallel_universes ADD COLUMN canonical_event_id INTEGER "
+                "REFERENCES character_canonical_events(id) ON DELETE SET NULL"
+            )
 
         # 迁移：universe_agents 加 deleted_at（软删除，保留历史 agent_reactions 引用）
         ua_cols = {row[1] for row in conn.execute("PRAGMA table_info(universe_agents)")}
@@ -277,12 +265,6 @@ def init_db(db_path: str):
                 ON universe_entity_history(universe_id, entity_name);
         """)
 
-        # 迁移：decisions 补加 universe_node_id 列
-        if 'universe_node_id' not in decision_cols:
-            conn.execute(
-                "ALTER TABLE decisions ADD COLUMN universe_node_id INTEGER REFERENCES universe_nodes(id) ON DELETE SET NULL"
-            )
-
         # 创建「我的宇宙」（唯一 is_personal_main=1，幂等）
         personal_row = conn.execute(
             "SELECT id FROM parallel_universes WHERE is_personal_main=1 LIMIT 1"
@@ -293,7 +275,7 @@ def init_db(db_path: str):
             ).fetchone()
             protagonist = self_persona['name'] if self_persona else '我'
             persona_id_val = self_persona['id'] if self_persona else None
-            cur = conn.execute(
+            conn.execute(
                 """INSERT INTO parallel_universes
                    (title, premise, protagonist_name, protagonist_role,
                     perspective, persona_id, universe_type, is_personal_main,
@@ -301,39 +283,6 @@ def init_db(db_path: str):
                    VALUES (?, '', ?, NULL, 'god', ?, 'personal', 1, 'active', ?, ?)""",
                 ('我的宇宙', protagonist, persona_id_val, now, now)
             )
-            personal_id = cur.lastrowid
-        else:
-            personal_id = personal_row['id']
-
-        # 迁移：将已有未删除 decisions 同步为「我的宇宙」节点（跳过已关联的）
-        decisions_to_migrate = conn.execute(
-            """SELECT id, title, recommendation, occurrence_year
-               FROM decisions
-               WHERE deleted_at IS NULL AND universe_node_id IS NULL
-               ORDER BY COALESCE(occurrence_year, 9999), created_at"""
-        ).fetchall()
-        for d in decisions_to_migrate:
-            cur2 = conn.execute(
-                """INSERT INTO universe_nodes
-                   (universe_id, parent_id, turn_number, perspective,
-                    protagonist_action, narrator_content,
-                    agent_reactions, branch_options,
-                    node_type, node_year, decision_id, created_at)
-                   VALUES (?, NULL, 0, 'god', ?, ?, '[]', '[]', 'decision', ?, ?, ?)""",
-                (personal_id, d['title'], d['recommendation'] or '',
-                 d['occurrence_year'], d['id'], now)
-            )
-            conn.execute(
-                "UPDATE decisions SET universe_node_id=? WHERE id=?",
-                (cur2.lastrowid, d['id'])
-            )
-
-        # 重置中断的推演：进程重启后 simulating 状态回退到 clarified
-        # （已完成选项保留在 simulation_results 表，SSE 重连后可恢复）
-        conn.execute(
-            "UPDATE decisions SET status='clarified', updated_at=? WHERE status='simulating'",
-            (now,)
-        )
 
         conn.commit()
 
@@ -463,7 +412,7 @@ CREATE TABLE IF NOT EXISTS parallel_universes (
     npc_ready          INTEGER NOT NULL DEFAULT 0,
     era_label          TEXT,
     world_label        TEXT,
-    canonical_event_id INTEGER,
+    canonical_event_id INTEGER REFERENCES character_canonical_events(id) ON DELETE SET NULL,
     status             TEXT NOT NULL DEFAULT 'active',
     created_at         TEXT NOT NULL,
     updated_at         TEXT NOT NULL

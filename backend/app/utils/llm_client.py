@@ -1,11 +1,11 @@
 """LLM 客户端 - 支持普通调用和 SSE 流式输出"""
 
-import json
 import re
 import time
 import logging
 from typing import Optional, Dict, Any, List, Generator
 from openai import OpenAI
+from .safe_json import safe_json_loads
 
 logger = logging.getLogger('lifeplanner.llm')
 
@@ -112,10 +112,10 @@ class LLMClient:
         match = re.search(r'\{[\s\S]*\}', cleaned)
         if match:
             cleaned = match.group(0)
-        try:
-            return json.loads(cleaned)
-        except json.JSONDecodeError:
+        result = safe_json_loads(cleaned)
+        if result is None:
             raise ValueError(f"LLM 返回的 JSON 格式无效: {cleaned}")
+        return result
 
     def stream(
         self,

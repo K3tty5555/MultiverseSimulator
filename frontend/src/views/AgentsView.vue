@@ -1,5 +1,5 @@
 <template>
-  <div class="agents-view">
+  <div class="agents-view lp-archive-bg-canvas">
     <header class="nav lp-archive-topbar">
       <div class="nav-left">
         <router-link to="/" class="lp-back-btn" aria-label="返档案馆" title="返档案馆（首页）">
@@ -67,6 +67,7 @@ import { useRouter } from 'vue-router'
 import { useApiRequest } from '../composables/useApiRequest.js'
 import { listUniversesWithAgents } from '../api/universe.js'
 import AgentCard from '../components/agents/AgentCard.vue'
+import { portraitMap } from '../constants/portraitMap.js'
 
 const router = useRouter()
 const universes = ref([])
@@ -79,20 +80,6 @@ const listRequest = useApiRequest(
 const loading = listRequest.loading
 const error = listRequest.error
 
-// 已有真立绘的角色映射（未来扩展可对接后端动态生成）
-const portraitMap = {
-  '诸葛亮': '/art/portrait-zhugeliang.png',
-  '曹操':   '/art/portrait-caocao.png',
-  '关羽':   '/art/portrait-guanyu.png',
-  '张飞':   '/art/portrait-zhangfei.png',
-  '周瑜':   '/art/portrait-zhouyu.png',
-  '赵云':   '/art/portrait-zhaoyun.png',
-  '黄盖':   '/art/portrait-huanggai.png',
-  '金旋':   '/art/portrait-jinxuan.png',
-  '刘度':   '/art/portrait-liudu.png',
-  '鲁肃':   '/art/portrait-lusu.png',
-  '孙权':   '/art/portrait-sunquan.png',
-}
 
 const dedupedAgents = computed(() => {
   const map = new Map()
@@ -142,17 +129,7 @@ onMounted(load)
 .agents-view {
   min-height: 100vh;
   background: var(--c-parchment);
-  position: relative;
-  isolation: isolate;
-}
-/* 档案桌面底纹 */
-.agents-view::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--img-hero, var(--c-umber-deep)) center/cover no-repeat;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 0;
+  --bg-canvas-img: var(--img-hero);
 }
 
 .nav-left { display: flex; align-items: center; gap: var(--sp-4); }
@@ -187,7 +164,7 @@ onMounted(load)
   gap: var(--sp-4);
   margin-bottom: var(--sp-6);
   padding-bottom: var(--sp-3);
-  border-bottom: 1px solid rgba(168, 137, 78, 0.35);
+  border-bottom: 1px solid var(--c-tarnished-gold-border);
 }
 .count-label {
   font-family: var(--font-mono);
@@ -211,7 +188,7 @@ onMounted(load)
 .search-input:focus {
   border-color: var(--c-tarnished-gold);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(168, 137, 78, 0.2);
+  box-shadow: 0 0 0 2px var(--c-tarnished-gold-ring);
 }
 
 .empty-state {
@@ -244,29 +221,6 @@ onMounted(load)
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--sp-5);
 }
-
-.agent-card {
-  display: flex; flex-direction: column;
-  background: var(--c-ivory-aged);
-  border: 1px solid var(--c-border-archive);
-  border-radius: 2px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--shadow-paper-edge);
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out),
-              border-color var(--duration-base);
-}
-.agent-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--c-tarnished-gold);
-  box-shadow: var(--shadow-gold-deep), var(--shadow-paper-edge);
-}
-.agent-card:focus-visible {
-  outline: 2px solid var(--c-tarnished-gold);
-  outline-offset: 3px;
-}
-
 
 @media (max-width: 640px) {
   .agents-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-3); }

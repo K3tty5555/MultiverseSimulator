@@ -102,6 +102,7 @@ def list_universes_with_agents():
 def list_canonical_events():
     """查询某角色的史实年表。不自动触发生成——客户端需显式调 /generate。
     query: ?name=X&type=historical&world_label=Y
+    注：type 允许 historical / fictional / personal（personal 仅查询，不支持 generate）
     returns: {events: [...], generated: bool}
     """
     from ..models.canonical_event import CanonicalEventRepository
@@ -121,10 +122,12 @@ def list_canonical_events():
 def generate_canonical_events_route():
     """触发 LLM 生成该角色的史实年表，存库并返回。
     body: {name, universe_type, world_label}
+    注：universe_type 只支持 historical / fictional；personal 类型无外部史实，不走此端点。
     """
     from ..utils.ai_assist import generate_canonical_events
     from ..models.canonical_event import CanonicalEventRepository
     from ..models.settings import SettingsRepository
+    from openai import APITimeoutError
 
     if not SettingsRepository.is_configured():
         return jsonify({'error': 'LLM 未配置，请先在设置中填写 API 信息'}), 503
@@ -137,7 +140,7 @@ def generate_canonical_events_route():
     if not name:
         return jsonify({'error': '请提供角色名字'}), 400
     if utype not in ('historical', 'fictional'):
-        return jsonify({'error': 'universe_type 必须为 historical 或 fictional'}), 400
+        return jsonify({'error': 'universe_type 必须为 historical 或 fictional（personal 类型不支持自动生成）'}), 400
 
     # 幂等：若已生成过，直接返回现有（用户可手动触发重生成时需先删除）
     existing = CanonicalEventRepository.list_for(name, utype, world_label)
@@ -145,20 +148,19 @@ def generate_canonical_events_route():
         return jsonify({'events': existing, 'generated': True, 'from_cache': True})
 
     try:
-        import json as _json
         raw_events = generate_canonical_events(name, utype, world_label or '')
         if not raw_events:
-            # LLM 返回空：不算失败，但无需存库
             return jsonify({'events': [], 'generated': False,
                             'reason': '该角色没有可考证的史实/原著节点'}), 200
         saved = CanonicalEventRepository.bulk_create(name, utype, world_label, raw_events)
         return jsonify({'events': saved, 'generated': True, 'from_cache': False})
-    except (ValueError, _json.JSONDecodeError) as e:
+    except ValueError as e:
         return jsonify({'error': f'AI 返回格式异常，请重试：{str(e)[:160]}'}), 422
-    except TimeoutError as e:
-        return jsonify({'error': f'AI 服务超时，请稍后重试：{str(e)[:160]}'}), 504
-    except Exception as e:
-        return jsonify({'error': f'AI 生成失败：{str(e)[:200]}'}), 500
+    except (APITimeoutError, TimeoutError):
+        return jsonify({'error': 'AI 服务超时，请稍后重试'}), 504
+    except Exception:
+        logger.exception("generate_canonical_events 失败: type=%s name=%s", utype, name)
+        return jsonify({'error': 'AI 生成失败，请稍后重试'}), 500
 
 
 @universe_bp.route('/canonical/events/<int:event_id>', methods=['PUT'])
@@ -197,8 +199,7 @@ def update_canonical_event(event_id):
 
 @universe_bp.route('/canonical/events/<int:event_id>', methods=['DELETE'])
 def delete_canonical_event(event_id):
-    """删除单条史实节点（关联的 universe.canonical_event_id 会被 SQLite 自动 SET NULL 效果——
-    但本项目 ALTER TABLE 未加 FK，故手动把宇宙的外键清空）。"""
+    """删除单条史实节点。UPDATE 外键清空 + DELETE 在同一事务内完成，避免 crash 导致不一致。"""
     from ..models.canonical_event import CanonicalEventRepository
     existing = CanonicalEventRepository.get(event_id)
     if not existing:
@@ -208,9 +209,47 @@ def delete_canonical_event(event_id):
             "UPDATE parallel_universes SET canonical_event_id=NULL WHERE canonical_event_id=?",
             (event_id,)
         )
+        conn.execute(
+            "DELETE FROM character_canonical_events WHERE id=?",
+            (event_id,)
+        )
         conn.commit()
-    CanonicalEventRepository.delete(event_id)
     return jsonify({'success': True})
+
+
+@universe_bp.route('/canonical/events/bulk-delete', methods=['POST'])
+def bulk_delete_canonical_events():
+    """批量删除指定角色下未被用户编辑过的史实节点（用于重新梳理流程）。
+    body: {name, universe_type, world_label}
+    在单个事务内原子完成，避免串行 HTTP 调用中途失败导致部分删除。
+    returns: {deleted_count: int}
+    """
+    from ..models.canonical_event import CanonicalEventRepository
+    data = request.get_json() or {}
+    name = str(data.get('name') or '').strip()[:MAX_NAME_LEN]
+    utype = data.get('universe_type') or 'historical'
+    world_label = str(data.get('world_label') or '').strip() or None
+    if not name:
+        return jsonify({'error': '请提供角色名字'}), 400
+
+    events = CanonicalEventRepository.list_for(name, utype, world_label)
+    to_delete = [e['id'] for e in events if not e.get('is_edited')]
+    if not to_delete:
+        return jsonify({'deleted_count': 0})
+
+    with get_db() as conn:
+        placeholders = ','.join('?' * len(to_delete))
+        conn.execute(
+            "UPDATE parallel_universes SET canonical_event_id=NULL "
+            f"WHERE canonical_event_id IN ({placeholders})",
+            to_delete
+        )
+        conn.execute(
+            f"DELETE FROM character_canonical_events WHERE id IN ({placeholders})",
+            to_delete
+        )
+        conn.commit()
+    return jsonify({'deleted_count': len(to_delete)})
 
 
 @universe_bp.route('/agent-timeline', methods=['GET'])

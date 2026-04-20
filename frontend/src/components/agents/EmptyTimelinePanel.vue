@@ -1,9 +1,9 @@
 <template>
   <div class="empty-panel">
-    <div class="panel-seal" aria-hidden="true">史</div>
+    <div class="panel-seal" aria-hidden="true">{{ typeText === '史料' ? '史' : '幻' }}</div>
     <h3 class="panel-title">尚无「{{ name }}」的生平年表</h3>
     <p class="panel-hint">
-      AI 可从{{ typeText }}或原著梳理 5-8 个关键时序。<br/>
+      AI 可从{{ typeText === '史料' ? '史料与考证文献' : '原著' }}梳理 5-8 个关键时序。<br/>
       生成后可编辑、除名，或从任一节点分笔开卷。
     </p>
     <button class="lp-btn-archive" :disabled="generating" @click="$emit('generate')">

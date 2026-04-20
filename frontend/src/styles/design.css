@@ -198,6 +198,11 @@
   --c-deep-teal:      #2d4a47;  /* 墨绿 - 皮革书脊、学院配色 */
   --c-deep-teal-soft: #4a6b68;  /* 淡墨绿 - hover */
   --c-tarnished-gold: #a8894e;  /* 暗金 - 旧金属装饰（比 gold-dark 更哑光） */
+  --c-tarnished-gold-tint:         rgba(168, 137, 78, 0.08);  /* 极淡金 - 悬停底色 */
+  --c-tarnished-gold-ring:         rgba(168, 137, 78, 0.18);  /* 金光晕 - box-shadow */
+  --c-tarnished-gold-border:       rgba(168, 137, 78, 0.35);  /* 金边线 - 竖线/分隔 */
+  --c-tarnished-gold-border-strong:rgba(168, 137, 78, 0.40);  /* 金边线强 - 年份框 */
+  --c-oxblood-tint:                rgba(107, 46, 42, 0.08);   /* 血红底 - 删除/危险悬停 */
   --c-brass:          #8b7340;  /* 黄铜 - 古董器皿 */
   --c-ivory-aged:     #e8dfc8;  /* 老象牙 - 档案纸张 */
   --c-dust:           #b8a98a;  /* 尘色 - 光束雾气 */
@@ -480,6 +485,27 @@
   color: var(--c-ivory-aged);
   border-color: var(--c-tarnished-gold);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   档案背景画布原语（供多视图复用 · 替代各 View 中的 ::before 重复代码）
+   用法: 给根元素加 class="lp-archive-bg-canvas"，
+         再在 scoped CSS 中设置 --bg-canvas-img: var(--img-xxx)
+   ══════════════════════════════════════════════════════════════ */
+.lp-archive-bg-canvas {
+  position: relative;
+  isolation: isolate;
+}
+.lp-archive-bg-canvas::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--bg-canvas-img, var(--c-umber-deep)) center/cover no-repeat;
+  opacity: var(--bg-canvas-opacity, 0.14);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* body 滚动锁定（modal 打开时挂载） */
+body.overflow-hidden { overflow: hidden; }
 
 /* ══════════════════════════════════════════════════════════════
    档案风 Modal 原语（全局复用 · 替代各组件自定义 .modal-*）

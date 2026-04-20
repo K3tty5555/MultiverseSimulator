@@ -50,7 +50,7 @@ defineEmits(['edit', 'fork', 'enter-universe'])
 function formatYear(y) {
   if (y === null || y === undefined) return ''
   if (y < 0) return `前 ${-y} 年`
-  return `${y} AD`
+  return `公元 ${y} 年`
 }
 function formatRelative(iso) {
   if (!iso) return ''
@@ -76,13 +76,13 @@ function formatRelative(iso) {
 .marker-dot {
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--c-tarnished-gold);
-  box-shadow: 0 0 0 4px rgba(168, 137, 78, 0.18);
+  box-shadow: 0 0 0 4px var(--c-tarnished-gold-ring);
   flex-shrink: 0;
 }
 .marker-line {
   flex: 1;
   width: 2px;
-  background: rgba(168, 137, 78, 0.35);
+  background: var(--c-tarnished-gold-border);
   margin-top: var(--sp-2);
   min-height: 24px;
 }
@@ -108,7 +108,7 @@ function formatRelative(iso) {
   color: var(--c-tarnished-gold);
   letter-spacing: 0.08em;
   padding: 3px 10px;
-  border: 1px solid rgba(168, 137, 78, 0.4);
+  border: 1px solid var(--c-tarnished-gold-border-strong);
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -145,7 +145,7 @@ function formatRelative(iso) {
 .btn-icon-archive:hover {
   border-color: var(--c-tarnished-gold);
   color: var(--c-umber-deep);
-  background: rgba(168, 137, 78, 0.1);
+  background: var(--c-tarnished-gold-tint);
 }
 
 .event-desc {
@@ -159,9 +159,9 @@ function formatRelative(iso) {
 .event-branches {
   margin-top: var(--sp-3);
   padding: var(--sp-3);
-  background: rgba(168, 137, 78, 0.08);
+  background: var(--c-tarnished-gold-tint);
   border-left: 2px solid var(--c-tarnished-gold);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  border-radius: 0 2px 2px 0;
 }
 .branches-label {
   display: block;

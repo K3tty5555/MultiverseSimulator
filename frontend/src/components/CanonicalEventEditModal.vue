@@ -5,7 +5,7 @@
         <div class="lp-modal event-modal" role="dialog" aria-modal="true" aria-labelledby="edit-event-title">
           <div class="lp-modal-header">
             <div class="header-left">
-              <span class="header-seal" aria-hidden="true">史</span>
+              <span class="header-seal" aria-hidden="true">{{ sealChar }}</span>
               <h2 id="edit-event-title" class="lp-modal-title">修订史实节点</h2>
             </div>
             <button class="lp-modal-close" aria-label="关闭" @click="handleClose">
@@ -38,7 +38,7 @@
             <span class="footer-spacer"></span>
             <button class="lp-btn-ghost-archive" :disabled="isSaving" @click="handleClose">取消</button>
             <button class="lp-btn-archive" :disabled="isSaving || !form.title.trim()" @click="handleSave">
-              <span v-if="isSaving" class="btn-inline-spinner" aria-hidden="true"></span>
+              <span v-if="isSaving" class="lp-btn-inline-spinner" aria-hidden="true"></span>
               {{ isSaving ? '落笔中…' : '保存修订' }}
             </button>
           </div>
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useToast } from '../composables/useToast.js'
 import { updateCanonicalEvent, deleteCanonicalEvent } from '../api/universe.js'
 import ConfirmModal from './ConfirmModal.vue'
@@ -70,6 +70,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'saved', 'deleted'])
 const { error: toastError } = useToast()
+
+const sealChar = computed(() =>
+  props.event?.universe_type === 'fictional' ? '幻' : '史'
+)
 
 const form = reactive({ title: '', year: null, description: '' })
 const formError = ref('')
@@ -83,11 +87,11 @@ watch(() => props.show, (v) => {
     form.year = props.event.year ?? null
     form.description = props.event.description || ''
     formError.value = ''
-    document.body.style.overflow = 'hidden'
+    document.body.classList.add('overflow-hidden')
   } else {
-    document.body.style.overflow = ''
+    document.body.classList.remove('overflow-hidden')
   }
-})
+}, { immediate: true })
 
 function onKeydown(e) {
   if (!props.show || e.key !== 'Escape' || confirmDelete.value) return
@@ -97,7 +101,7 @@ function onKeydown(e) {
 onMounted(() => document.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKeydown)
-  document.body.style.overflow = ''
+  document.body.classList.remove('overflow-hidden')
 })
 
 async function handleSave() {
@@ -105,9 +109,12 @@ async function handleSave() {
   formError.value = ''
   isSaving.value = true
   try {
+    const yearVal = form.year === null || form.year === '' || Number.isNaN(Number(form.year))
+      ? null
+      : Number(form.year)
     const res = await updateCanonicalEvent(props.event.id, {
       title: form.title.trim(),
-      year: form.year === null || form.year === '' ? null : Number(form.year),
+      year: yearVal,
       description: form.description.trim(),
     })
     if (res.event) emit('saved', res.event)
@@ -172,20 +179,10 @@ function handleClose() {
 .btn-delete:hover:not(:disabled) {
   border-color: var(--c-oxblood);
   color: var(--c-oxblood);
-  background: rgba(107, 46, 42, 0.08);
+  background: var(--c-oxblood-tint);
 }
 .btn-delete:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.btn-inline-spinner {
-  display: inline-block;
-  width: 10px; height: 10px;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: btn-spin 0.7s linear infinite;
-  margin-right: 5px;
-}
-@keyframes btn-spin { to { transform: rotate(360deg); } }
 
 .fade-enter-active, .fade-leave-active { transition: opacity var(--duration-base) var(--ease-out); }
 .fade-enter-active .lp-modal, .fade-leave-active .lp-modal { transition: transform var(--duration-base) var(--ease-out); }

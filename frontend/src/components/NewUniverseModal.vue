@@ -106,6 +106,7 @@ import { scaffoldUniverse, createUniverse } from '../api/universe.js'
 const props = defineProps({
   show: { type: Boolean, required: true },
   basedOnEvent: { type: Object, default: null },
+  protagonistName: { type: String, default: '' },
   fixedType: { type: String, default: '' },
   fixedWorldLabel: { type: String, default: '' },
 })
@@ -246,7 +247,7 @@ async function handleCreate() {
     const res = await createUniverse({
       title: scaffold.title.trim(),
       premise: scaffold.premise.trim(),
-      protagonist_name: '',
+      protagonist_name: props.protagonistName || '',
       universe_type: universeType.value,
       era_label: scaffold.era_label.trim() || null,
       world_label: scaffold.world_label.trim() || null,

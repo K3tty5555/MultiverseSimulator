@@ -1,7 +1,7 @@
 <template>
   <div class="unlinked-section">
     <h4 class="unlinked-title">未系节点的推演</h4>
-    <p class="unlinked-hint">这些卷宗创建时未绑定具体节点（多为旧卷或 checkpoint 卷）。</p>
+    <p class="unlinked-hint">可进入这些卷宗后，在宇宙内手动关联到具体史实节点。</p>
     <ul class="unlinked-list">
       <li v-for="u in universes" :key="u.universe_id" class="branch-item">
         <span class="branch-title">{{ u.title }}</span>
