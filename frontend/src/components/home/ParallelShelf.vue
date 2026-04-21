@@ -3,12 +3,16 @@
     <header class="lp-panel-head">
       <span class="lp-panel-seal" aria-hidden="true">❧</span>
       <h2 class="lp-panel-title">平行档案卷宗</h2>
-      <span class="lp-panel-hint">
-        <template v-if="universes.length > 0">{{ universes.length }} 个被归档的可能性 · 推演每一次「若我是…」</template>
-        <template v-else>在平行时空 · 推演每一次「若我是…」的可能</template>
-      </span>
+      <span class="lp-panel-spacer"></span>
+      <button class="shelf-new-btn" @click="$emit('new-universe')">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        开启新卷宗
+      </button>
     </header>
 
+    <div class="shelf-wrap">
     <div class="shelf" tabindex="0">
       <!-- 已有的平行卷宗 -->
       <article
@@ -84,11 +88,16 @@
         title="开启新卷宗"
       >
         <div class="volume-cover volume-cover--new">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4 V24 M4 14 H24" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="14" cy="14" r="11" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6"/></svg>
+          <div class="volume-new-inner">
+            <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><path d="M14 4 V24 M4 14 H24" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="14" cy="14" r="11" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6"/></svg>
+            <span class="volume-new-label">开启新卷宗</span>
+          </div>
         </div>
         <div class="volume-title volume-title--muted">开启新卷宗</div>
         <div class="volume-sub">{{ universes.length === 0 ? '或自定义一段未写的可能' : '展开一段未写的可能' }}</div>
       </article>
+    </div>
+    <div class="shelf-fade-right" aria-hidden="true"></div>
     </div>
   </section>
 </template>
@@ -114,9 +123,69 @@ const recommendations = [
 <style scoped>
 .panel-shelf { grid-area: shelf; }
 
+/* 书架空白区：横向老纸横线纹，避免大片空白裸露 */
+.shelf-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 23px,
+      rgba(107, 79, 53, 0.13) 23px,
+      rgba(107, 79, 53, 0.13) 24px
+    ),
+    rgba(201, 176, 130, 0.08);
+}
+
+.shelf-new-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--c-sepia);
+  background: none;
+  border: 1px dashed rgba(168, 137, 78, 0.5);
+  border-radius: 2px;
+  padding: 3px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--duration-fast), border-color var(--duration-fast);
+}
+.shelf-new-btn:hover {
+  color: var(--c-tarnished-gold);
+  border-color: var(--c-tarnished-gold);
+}
+.shelf-new-btn:focus-visible {
+  outline: 1px dashed var(--c-tarnished-gold);
+  outline-offset: 3px;
+}
+
+/* 横向滚动提示渐变容器 */
+.shelf-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.shelf-fade-right {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: var(--sp-10);
+  background: linear-gradient(to right, transparent, rgba(220, 205, 170, 0.6));
+  pointer-events: none;
+  z-index: 2;
+}
+
 .shelf {
+  height: 100%;
   display: flex;
   align-items: flex-start;
+  position: relative; z-index: 1;
   gap: var(--sp-4);
   padding: var(--sp-3) var(--sp-5) var(--sp-4);
   overflow-x: auto;
@@ -224,11 +293,8 @@ const recommendations = [
 .vol-c-br { bottom: 0; right: 0; border-left: none; border-top: none; }
 
 .volume-cover--new {
-  background: repeating-linear-gradient(
-    45deg,
-    var(--c-ivory-aged) 0, var(--c-ivory-aged) 6px,
-    rgba(201, 176, 145, 0.22) 6px, rgba(201, 176, 145, 0.22) 12px);
-  border: 1px dashed var(--c-sepia);
+  background: var(--c-ivory-aged);
+  border: 1px dashed rgba(168, 137, 78, 0.5);
   display: flex; align-items: center; justify-content: center;
   color: var(--c-sepia);
   aspect-ratio: 2 / 3;
@@ -243,6 +309,16 @@ const recommendations = [
   background: rgba(232, 223, 200, 0.95);
   border-color: var(--c-tarnished-gold);
   color: var(--c-tarnished-gold);
+}
+.volume-new-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.volume-new-label {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: inherit;
+  opacity: 0.75;
 }
 
 /* 推荐标签：sepia 暖调替代原来艳丽的 oxblood */
@@ -292,5 +368,18 @@ const recommendations = [
 .volume-sub--hook {
   font-style: italic;
   color: var(--c-umber);
+}
+
+/* 矮窗口（Electron 760px 高）：书封缩小 + 间距收紧，保证标题完整显示 */
+@media (max-height: 820px) {
+  .shelf {
+    padding: var(--sp-2) var(--sp-4) var(--sp-2);
+  }
+  .volume {
+    width: 148px;
+  }
+  .volume-title {
+    margin-top: var(--sp-2);
+  }
 }
 </style>

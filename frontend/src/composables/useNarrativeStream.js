@@ -219,6 +219,8 @@ export function useNarrativeStream(
           if (data.type !== 'narrator_chunk') await scrollBottom()
         },
         onError() {
+          // node_done 已正常处理（streaming 已置 false）时忽略 SSE 重连失败
+          if (!streaming.value) return
           input.value = pendingAction.value
           pendingAction.value = ''
           streamingNarrator.value = ''
@@ -226,7 +228,7 @@ export function useNarrativeStream(
           streaming.value = false
           streamError.value = '推演连接中断，请重试'
         },
-        timeout: 45000,
+        timeout: 90000,
       })
     } catch {
       streaming.value = false
@@ -275,6 +277,8 @@ export function useNarrativeStream(
       turnStream.close()
       emit('node-created', data.node_id)
       await scrollBottom()
+    } else if (data.type === 'turn_start' || data.type === 'heartbeat') {
+      // no-op — onmessage firing is enough to reset the 45s timeout
     } else if (data.type === 'error') {
       input.value = pendingAction.value
       pendingAction.value = ''

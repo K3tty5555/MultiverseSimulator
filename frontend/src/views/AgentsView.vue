@@ -66,11 +66,13 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApiRequest } from '../composables/useApiRequest.js'
 import { listUniversesWithAgents } from '../api/universe.js'
+import { listPersonas } from '../api/persona.js'
 import AgentCard from '../components/agents/AgentCard.vue'
 import { portraitMap } from '../constants/portraitMap.js'
 
 const router = useRouter()
 const universes = ref([])
+const builtinPersonas = ref([])
 const searchQuery = ref('')
 
 const listRequest = useApiRequest(
@@ -80,23 +82,34 @@ const listRequest = useApiRequest(
 const loading = listRequest.loading
 const error = listRequest.error
 
-
 const dedupedAgents = computed(() => {
   const map = new Map()
-  function push(name, u) {
+  function push(name, universeType, worldLabel, occurrence) {
     if (!name) return
-    const key = `${name}:${u.universe_type}`
+    const key = `${name}:${universeType}`
     if (!map.has(key)) {
-      map.set(key, { name, universe_type: u.universe_type, world_label: u.world_label || '', occurrences: [] })
+      map.set(key, { name, universe_type: universeType, world_label: worldLabel || '', occurrences: [] })
     }
     const entry = map.get(key)
-    entry.occurrences.push({ universe_id: u.universe_id, universe_title: u.title })
-    if (!entry.world_label && u.world_label) entry.world_label = u.world_label
+    if (occurrence) entry.occurrences.push(occurrence)
+    if (!entry.world_label && worldLabel) entry.world_label = worldLabel
   }
+
+  // 先从实际宇宙中归档已登场角色
   for (const u of universes.value) {
-    if (u.protagonist_name) push(u.protagonist_name, u)
-    for (const a of u.agents) push(a.name, u)
+    const occ = { universe_id: u.universe_id, universe_title: u.title }
+    if (u.protagonist_name) push(u.protagonist_name, u.universe_type, u.world_label, occ)
+    for (const a of u.agents) push(a.name, u.universe_type, u.world_label, occ)
   }
+
+  // 补充所有内置角色（未登场的也显示）
+  for (const p of builtinPersonas.value) {
+    const key = `${p.name}:historical`
+    if (!map.has(key)) {
+      push(p.name, 'historical', '三国乱世', null)
+    }
+  }
+
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'zh'))
 })
 
@@ -113,13 +126,24 @@ const filteredAgents = computed(() => {
 function openTimeline(c) {
   router.push({
     path: `/agents/${encodeURIComponent(c.name)}`,
-    query: { type: c.universe_type },
+    query: { type: c.universe_type, world_label: c.world_label || undefined },
   })
 }
+
 async function load() {
   try {
-    const result = await listRequest.execute()
-    universes.value = Array.isArray(result) ? result : []
+    const [univResult, personaResult] = await Promise.allSettled([
+      listRequest.execute(),
+      listPersonas(),
+    ])
+    if (univResult.status === 'fulfilled') {
+      universes.value = Array.isArray(univResult.value) ? univResult.value : []
+    }
+    if (personaResult.status === 'fulfilled') {
+      builtinPersonas.value = (personaResult.value.personas || []).filter(
+        p => p.persona_type === 'builtin'
+      )
+    }
   } catch { /* toast */ }
 }
 onMounted(load)

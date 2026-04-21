@@ -5,6 +5,7 @@ const { spawn } = require('child_process')
 const path = require('path')
 const http = require('http')
 
+
 const FLASK_PORT = parseInt(process.env.FLASK_PORT || '5001', 10)
 const IS_DEV = !app.isPackaged
 
@@ -102,9 +103,9 @@ function createLoadingWindow() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 1100,
+    width: 1200,
     height: 760,
-    minWidth: 800,
+    minWidth: 860,
     minHeight: 600,
     title: '多元宇宙模拟器',
     show: false,

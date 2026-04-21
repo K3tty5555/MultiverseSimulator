@@ -13,7 +13,10 @@
     <div class="agent-info">
       <div class="agent-name">{{ agent.name }}</div>
       <div class="agent-origin">{{ originText }}</div>
-      <div v-if="agent.occurrences.length > 1" class="agent-occurrences">
+      <div v-if="agent.occurrences.length === 0" class="agent-occurrences agent-occurrences--none">
+        尚未登场
+      </div>
+      <div v-else-if="agent.occurrences.length > 1" class="agent-occurrences">
         登场于 {{ agent.occurrences.length }} 卷
       </div>
     </div>
@@ -36,7 +39,10 @@ const originText = computed(() => {
   const t = typeMap[props.agent.universe_type] || '史'
   return props.agent.world_label ? `${t} · ${props.agent.world_label}` : (t === '史' ? '史卷' : '幻卷')
 })
-const tooltip = computed(() => `${originText.value} · 登场于 ${props.agent.occurrences.length} 卷`)
+const tooltip = computed(() => {
+  const n = props.agent.occurrences.length
+  return n === 0 ? `${originText.value} · 尚未登场` : `${originText.value} · 登场于 ${n} 卷`
+})
 </script>
 
 <style scoped>
@@ -93,5 +99,9 @@ const tooltip = computed(() => `${originText.value} · 登场于 ${props.agent.o
   margin-top: 4px;
   padding-top: 4px;
   border-top: 1px dashed rgba(168, 137, 78, 0.35);
+}
+.agent-occurrences--none {
+  color: var(--c-sepia-light);
+  opacity: 0.7;
 }
 </style>

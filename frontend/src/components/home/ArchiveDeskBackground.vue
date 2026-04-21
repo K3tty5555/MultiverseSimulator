@@ -17,7 +17,6 @@
 }
 .desk-grain {
   background-image: repeating-linear-gradient(90deg, rgba(61, 46, 31, 0.02) 0, rgba(61, 46, 31, 0.02) 1px, transparent 1px, transparent 3px);
-  mix-blend-mode: overlay;
   opacity: 0.5;
 }
 .desk-vignette {

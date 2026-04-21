@@ -51,6 +51,8 @@ export function useEventStream() {
     }
 
     source.onerror = () => {
+      // stale guard：若 close() 已将 es.value 清空，说明本次推流已正常结束，忽略重连失败
+      if (es.value !== source) return
       if (source.readyState === EventSource.CONNECTING) {
         status.value = 'reconnecting'
         return

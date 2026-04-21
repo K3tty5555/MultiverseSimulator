@@ -23,7 +23,7 @@ def get_settings():
 
 @settings_bp.route('', methods=['PUT'])
 def update_settings():
-    data = request.get_json()
+    data = request.get_json() or {}
     if 'llm_api_key' in data and data['llm_api_key'] and '****' not in data['llm_api_key']:
         SettingsRepository.set('llm_api_key', data['llm_api_key'].strip())
     if 'llm_base_url' in data:
@@ -36,10 +36,10 @@ def update_settings():
 @settings_bp.route('/test', methods=['POST'])
 def test_connection():
     """测试 LLM 连接是否可用"""
-    data = request.get_json()
-    api_key = data.get('llm_api_key', '').strip()
-    base_url = data.get('llm_base_url', '').strip()
-    model = data.get('llm_model_name', '').strip()
+    data = request.get_json() or {}
+    api_key = (data.get('llm_api_key') or '').strip()
+    base_url = (data.get('llm_base_url') or '').strip()
+    model = (data.get('llm_model_name') or '').strip()
 
     if not api_key or '****' in api_key:
         # 用已保存的 key

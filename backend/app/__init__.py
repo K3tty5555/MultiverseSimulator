@@ -65,6 +65,17 @@ def create_app(config_class=Config):
         get_logger('lifeplanner.request').debug(f"→ {response.status_code}")
         return response
 
+    from flask import jsonify as _jsonify
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        get_logger('lifeplanner').error(f"未处理的 500 错误: {e}")
+        return _jsonify({'error': '服务器内部错误，请稍后重试'}), 500
+
+    @app.errorhandler(415)
+    def unsupported_media(e):
+        return _jsonify({'error': '请求格式错误，请使用 JSON'}), 415
+
     from .api import profile_bp, settings_bp, persona_bp, universe_bp, world_bp
     app.register_blueprint(profile_bp, url_prefix='/api/profile')
     app.register_blueprint(settings_bp, url_prefix='/api/settings')

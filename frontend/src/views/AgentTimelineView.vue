@@ -120,6 +120,7 @@ const decodedName = computed(() => {
   try { return decodeURIComponent(props.name) } catch { return props.name }
 })
 const universeType = computed(() => route.query.type || 'historical')
+const worldLabelParam = computed(() => route.query.world_label || '')
 const typeText = computed(() =>
   universeType.value === 'historical' ? '史料' : '原著'
 )
@@ -270,7 +271,7 @@ async function load() {
     if (univRes.status === 'fulfilled') {
       universes.value = univRes.value.universes || []
     }
-    let worldLabelForQuery = ''
+    let worldLabelForQuery = worldLabelParam.value
     for (const u of universes.value) {
       if (u.universe_type === universeType.value && u.world_label &&
           (u.protagonist_name === decodedName.value ||

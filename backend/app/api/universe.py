@@ -853,6 +853,7 @@ def create_from_checkpoint():
         protagonist_role=protagonist_role,
         perspective=perspective,
         persona_id=persona['id'],
+        world_label=cp.get('world_name') or '',
     )
     universe_id = universe['id']
 

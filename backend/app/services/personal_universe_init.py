@@ -18,7 +18,7 @@ def generate_root_narration(answers: Dict, profile: Dict = None) -> str:
     theme      = answers.get('theme', '')[:200]
     aspiration = answers.get('aspiration', '')[:200]
 
-    profile_summary = (profile or {}).get('summary', '')[:300]
+    profile_summary = ((profile or {}).get('summary') or '')[:300]
 
     system = (
         "你是一位叙事作家，为用户撰写「人生宇宙」的开篇叙事。"

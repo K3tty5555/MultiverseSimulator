@@ -33,4 +33,5 @@ Atmospheric regal gold-green mood, not a detailed scenic painting.
 
 ## Strict negative
 
-NO Chinese ink/gongbi/watercolor painting style, NO traditional brushwork, NO flat color-fill regions, NO visible outline linework, NO landscape scenery, NO mountains, NO auspicious cloud (祥云) patterns, NO stamped seals (印章), NO decorative borders/frames, NO text, NO anime style, NO 3D CGI render, NO full body showing feet, NO static standing pose on open ground.
+NO card frame, NO golden border, NO rounded corner frame, NO card layout border of any kind, NO text, NO Chinese characters, NO subtitles, NO watermarks.
+NO Chinese ink/gongbi/watercolor painting style, NO traditional brushwork, NO flat color-fill regions, NO visible outline linework, NO landscape scenery, NO mountains, NO auspicious cloud (祥云) patterns, NO stamped seals (印章), NO decorative borders/frames, NO anime style, NO 3D CGI render, NO full body showing feet, NO static standing pose on open ground.

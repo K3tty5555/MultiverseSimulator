@@ -29,19 +29,34 @@
     </ul>
 
     <!-- 空态：档案馆守夜氛围卡 -->
-    <div v-else class="events-empty-diary">
+    <div
+      v-else
+      class="events-empty-diary"
+      role="button"
+      tabindex="0"
+      @click="$emit('open-universe-list')"
+      @keydown.enter.space.prevent="$emit('open-universe-list')"
+    >
       <div class="diary-stamp" aria-hidden="true">
-        <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-          <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="0.7" opacity="0.3" stroke-dasharray="2 2"/>
-          <text x="24" y="28" font-family="serif" font-size="11" fill="currentColor" text-anchor="middle" opacity="0.7">档案</text>
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+          <circle cx="40" cy="40" r="28" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="3 3"/>
+          <circle cx="40" cy="40" r="20" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
+          <text x="40" y="36" font-family="serif" font-size="10" fill="currentColor" text-anchor="middle" opacity="0.6" letter-spacing="3">多元宇宙</text>
+          <text x="40" y="50" font-family="serif" font-size="13" fill="currentColor" text-anchor="middle" opacity="0.75" font-weight="500">档案馆</text>
         </svg>
       </div>
       <div class="diary-content">
         <div class="diary-date">{{ dateStamp }}</div>
         <p class="diary-line">档案馆已静候多时。</p>
         <p class="diary-line diary-line--italic">灯下等待的第一笔批注，会被永远存档。</p>
-        <p class="diary-hint">—— 推演任一卷宗，批注自此浮现。</p>
+        <p class="diary-line diary-line--sub">进入任意卷宗后，推演记录将在此汇集。</p>
+      </div>
+      <div class="diary-cta">
+        <span class="diary-cta-text">打开一份卷宗，开始推演</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
   </section>
@@ -53,7 +68,7 @@ import { formatRelativeTime } from '../../utils/format.js'
 defineProps({
   events: { type: Array, default: () => [] },
 })
-defineEmits(['enter-universe'])
+defineEmits(['enter-universe', 'open-universe-list'])
 
 const dateStamp = computed(() => {
   const d = new Date()
@@ -64,7 +79,7 @@ const dateStamp = computed(() => {
 </script>
 
 <style scoped>
-.panel-events { grid-area: events; }
+.panel-events { grid-area: events; padding-bottom: var(--sp-4); }
 
 .events-list {
   list-style: none;
@@ -130,40 +145,60 @@ const dateStamp = computed(() => {
 .events-empty-diary {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--sp-5);
-  padding: var(--sp-5) var(--sp-6);
-  margin: var(--sp-4) var(--sp-4);
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-6) var(--sp-6) var(--sp-5);
+  margin: var(--sp-4) var(--sp-4) 0;
   background: rgba(168, 137, 78, 0.06);
   border: 1px solid rgba(168, 137, 78, 0.25);
   border-radius: 2px;
+  cursor: pointer;
   position: relative;
+  overflow: hidden;
+  transition: background var(--duration-fast), border-color var(--duration-fast);
 }
 .events-empty-diary::before {
   content: '';
   position: absolute;
-  top: -4px; right: 24px;
-  width: 32px; height: 12px;
-  background: repeating-linear-gradient(90deg, rgba(168,137,78,0.35) 0 3px, transparent 3px 6px);
-  opacity: 0.7;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(107, 79, 53, 0.07) 0,
+    rgba(107, 79, 53, 0.07) 1px,
+    transparent 1px,
+    transparent 26px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.events-empty-diary > * { position: relative; z-index: 1; }
+.events-empty-diary:hover {
+  background: rgba(168, 137, 78, 0.11);
+  border-color: var(--c-tarnished-gold);
+}
+.events-empty-diary:focus-visible {
+  outline: 1px dashed var(--c-tarnished-gold);
+  outline-offset: 3px;
 }
 .diary-stamp {
   color: var(--c-oxblood);
   flex-shrink: 0;
-  opacity: 0.7;
+  opacity: 0.65;
 }
 .diary-content {
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 4px;
-  flex: 1;
-  min-width: 0;
+  text-align: center;
 }
 .diary-date {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--c-tarnished-gold);
   letter-spacing: 0.15em;
-  text-transform: uppercase;
   padding-bottom: 4px;
   border-bottom: 1px dashed rgba(168, 137, 78, 0.3);
   margin-bottom: 4px;
@@ -179,12 +214,30 @@ const dateStamp = computed(() => {
   font-style: italic;
   color: var(--c-sepia);
 }
-.diary-hint {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--c-sepia);
-  letter-spacing: 0.05em;
+.diary-line--sub {
+  font-size: 12px;
+  color: var(--c-sepia-light);
   margin-top: var(--sp-2);
   opacity: 0.8;
+}
+.diary-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px dashed var(--c-tarnished-gold);
+  border-radius: 2px;
+  margin-bottom: var(--sp-3);
+  color: var(--c-tarnished-gold);
+  transition: color var(--duration-fast), border-color var(--duration-fast);
+}
+.events-empty-diary:hover .diary-cta {
+  color: var(--c-oxblood);
+  border-color: var(--c-oxblood);
+}
+.diary-cta-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
 }
 </style>

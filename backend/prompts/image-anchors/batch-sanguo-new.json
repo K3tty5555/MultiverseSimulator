@@ -1,0 +1,125 @@
+{
+  "jobs": 3,
+  "tasks": [
+    {
+      "id": "portrait-liubei",
+      "promptFiles": ["portrait-liubei.md"],
+      "image": "../../../frontend/public/art/portrait-liubei.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-yuanshao",
+      "promptFiles": ["portrait-yuanshao.md"],
+      "image": "../../../frontend/public/art/portrait-yuanshao.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-caopi",
+      "promptFiles": ["portrait-caopi.md"],
+      "image": "../../../frontend/public/art/portrait-caopi.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-xunyu",
+      "promptFiles": ["portrait-xunyu.md"],
+      "image": "../../../frontend/public/art/portrait-xunyu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-guojia",
+      "promptFiles": ["portrait-guojia.md"],
+      "image": "../../../frontend/public/art/portrait-guojia.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-simayi",
+      "promptFiles": ["portrait-simayi.md"],
+      "image": "../../../frontend/public/art/portrait-simayi.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-luxun",
+      "promptFiles": ["portrait-luxun.md"],
+      "image": "../../../frontend/public/art/portrait-luxun.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-lvbu",
+      "promptFiles": ["portrait-lvbu.md"],
+      "image": "../../../frontend/public/art/portrait-lvbu.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-dongzhuo",
+      "promptFiles": ["portrait-dongzhuo.md"],
+      "image": "../../../frontend/public/art/portrait-dongzhuo.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    },
+    {
+      "id": "portrait-diaochan",
+      "promptFiles": ["portrait-diaochan.md"],
+      "image": "../../../frontend/public/art/portrait-diaochan.png",
+      "ar": "2:3",
+      "quality": "2k",
+      "provider": "seedream",
+      "ref": [
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png",
+        "/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png"
+      ]
+    }
+  ]
+}

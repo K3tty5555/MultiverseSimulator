@@ -16,6 +16,22 @@
         </div>
         <h3 class="primary-title">开启本命卷宗</h3>
         <p class="primary-desc">AI 将以你的档案为起点，在时间的纵深中为你推演每一次选择的余波。</p>
+        <!-- 档案待填区：空白档案纸氛围 -->
+        <div class="primary-blank-record" aria-hidden="true">
+          <div class="blank-divider">
+            <span class="blank-divider-line"></span>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1" opacity="0.6"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1" opacity="0.5"/></svg>
+            <span class="blank-divider-line"></span>
+          </div>
+          <div class="blank-rows">
+            <span class="blank-row"></span>
+            <span class="blank-row blank-row--short"></span>
+            <span class="blank-row"></span>
+            <span class="blank-row blank-row--medium"></span>
+            <span class="blank-row blank-row--short"></span>
+          </div>
+        </div>
+
         <button class="lp-btn-archive lp-btn-archive--lg" :disabled="starting" @click="$emit('start')">
           {{ starting ? '正在拆封...' : '拆开第一封 →' }}
         </button>
@@ -35,7 +51,10 @@
               <span class="badge-dot"></span>卷宗初启
             </div>
             <h3 class="primary-title">你的本命卷宗</h3>
-            <p class="primary-desc-mini">尚未启笔 · 此卷等你写下第一个决断</p>
+            <p class="primary-established">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              档案已建立 · 等待第一笔记录
+            </p>
           </div>
           <div class="primary-meta primary-meta--zero">
             <span class="meta-num">0</span>
@@ -47,12 +66,12 @@
           <span class="placeholder-seal" aria-hidden="true">
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1" opacity="0.4" stroke-dasharray="2 3"/><path d="M16 9 V23 M9 16 H23" stroke="currentColor" stroke-width="1" opacity="0.5"/></svg>
           </span>
-          <span class="placeholder-text">档案馆已为你准备好纸笔，只待研究员决定从何处开笔。</span>
+          <span class="placeholder-text">从一件改变你的往事开始，记录第一个人生节点。</span>
         </div>
 
         <div class="primary-actions primary-actions--single">
           <button class="lp-btn-archive lp-btn-archive--lg" @click="$emit('continue')">
-            写下第一笔 →
+            记录第一个节点 →
           </button>
         </div>
       </div>
@@ -158,9 +177,9 @@ const greeting = computed(() => {
 }
 .primary-inner {
   flex: 1;
-  padding: var(--sp-4) var(--sp-5) var(--sp-4) calc(var(--sp-5) + 8px);
+  padding: var(--sp-3) var(--sp-5) var(--sp-3) calc(var(--sp-5) + 8px);
   display: flex; flex-direction: column;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   min-height: 0;
   overflow: hidden;
 }
@@ -179,7 +198,7 @@ const greeting = computed(() => {
   border-radius: 2px;
   background: var(--c-umber-deep);
   color: var(--c-ivory-aged);
-  margin-bottom: var(--sp-2);
+  margin-bottom: var(--sp-1);
 }
 .primary-badge--ready { background: var(--c-deep-teal); }
 .primary-badge--active { background: var(--c-oxblood); }
@@ -192,7 +211,7 @@ const greeting = computed(() => {
 @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .primary-title {
   font-family: var(--font-serif-alt);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--c-umber-deep);
   letter-spacing: 0.02em;
@@ -200,9 +219,9 @@ const greeting = computed(() => {
 }
 .primary-desc {
   font-family: var(--font-serif);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--c-sepia);
-  line-height: 1.7;
+  line-height: 1.6;
   max-width: 480px;
   margin: 0;
 }
@@ -213,6 +232,15 @@ const greeting = computed(() => {
   color: var(--c-sepia);
   line-height: 1.5;
   margin: 4px 0 0;
+}
+.primary-established {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--c-deep-teal);
+  margin: 6px 0 0;
+  opacity: 0.85;
 }
 .primary-meta {
   display: flex; flex-direction: column; align-items: flex-end;
@@ -263,6 +291,74 @@ const greeting = computed(() => {
 }
 .primary-actions--single { justify-content: flex-start; }
 
+/* ready 态：按钮不撑满全宽，左对齐，保持蜡封印章感 */
+.primary-card--ready .primary-inner { align-items: flex-start; }
+.primary-card--ready .lp-btn-archive { min-width: 180px; margin-bottom: var(--sp-4); }
+
+/* 空卷态：撑到与 ready 态相同高度，避免切换时布局跳变 */
+.primary-card--empty { min-height: 220px; }
+.primary-card--empty .primary-actions { margin-top: auto; }
+.primary-card--empty .lp-btn-archive { min-width: 180px; margin-bottom: var(--sp-4); }
+
+/* 档案待填区 */
+.primary-blank-record {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+  min-height: 0;
+  opacity: 0.7;
+  width: 100%;
+}
+.blank-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  color: var(--c-tarnished-gold);
+}
+.blank-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(168, 137, 78, 0.4), transparent);
+}
+.blank-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.blank-row {
+  display: block;
+  height: 1px;
+  background: rgba(107, 79, 53, 0.3);
+  border-radius: 1px;
+  width: 100%;
+}
+.blank-row--short { width: 55%; }
+.blank-row--medium { width: 75%; }
+.blank-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: 1px dashed rgba(168, 137, 78, 0.25);
+}
+.blank-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-tarnished-gold);
+}
+.blank-value {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--c-sepia);
+  letter-spacing: 0.03em;
+}
+
 .primary-placeholder {
   display: flex; align-items: center; gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-4);
@@ -281,4 +377,33 @@ const greeting = computed(() => {
   flex-shrink: 0;
 }
 .placeholder-text { letter-spacing: 0.02em; }
+
+/* 矮窗口（Electron 800px）：压缩卡片内外间距 */
+@media (max-height: 820px) {
+  .primary-card {
+    margin: var(--sp-2) var(--sp-3) var(--sp-3);
+  }
+  .primary-inner {
+    padding: var(--sp-2) var(--sp-4) var(--sp-2) calc(var(--sp-4) + 8px);
+    gap: 6px;
+  }
+  .primary-title {
+    font-size: 18px;
+  }
+  .primary-desc {
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .primary-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+    margin-bottom: 2px;
+  }
+  .primary-excerpt {
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .primary-actions {
+    margin-top: var(--sp-1);
+  }
+}
 </style>

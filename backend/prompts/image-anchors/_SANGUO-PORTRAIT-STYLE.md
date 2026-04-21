@@ -78,10 +78,10 @@ NO full body / NO legs / NO feet / NO ground / NO standing stance.
 
 ## 五、Reference 图用法
 
-**当前 canonical references**（三国杀真实卡图，仅用于学画风）：
+**当前 canonical references**（v3 已生成立绘，仅用于学画风）：
 ```
-/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/2.png  # 曹操卡
-/Users/xiaowu/.claude/image-cache/597f2727-2f7d-4b6e-a30e-dc4bd9dbf534/3.png  # 孙权卡
+/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-caocao.png  # 曹操（魏·武将）
+/Users/xiaowu/workplace/LifePlanner/frontend/public/art/portrait-sunquan.png  # 孙权（吴·君主）
 ```
 
 **传法**：`--ref {cao-cao-card.png} {sun-quan-card.png}`

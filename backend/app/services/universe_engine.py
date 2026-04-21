@@ -327,7 +327,7 @@ def stream_turn(
     - error: 不可恢复错误
     """
     # 立即 flush HTTP headers
-    yield ': turn-start\n\n'
+    yield 'data: {"type":"turn_start"}\n\n'
 
     # ── 1. 加载宇宙与线程上下文 ──────────────────────────────────────────
     universe = UniverseRepository.get(universe_id)
@@ -357,24 +357,52 @@ def stream_turn(
         return
 
     # ── 3. 检测并生成新 NPC（叙事完成后，基于完整上下文更准确）───────────────
+    # detect_new_agents / generate_agent_profile 都是阻塞 LLM 调用（最长 30s/60s）
+    # 放进后台线程，主 generator 每 5s yield heartbeat，避免前端超时
     detection_text = protagonist_action + '\n' + narrator_content[:600]
-    try:
-        new_names = detect_new_agents(detection_text, known_names)
-        for name in new_names:
+
+    def _run_detect():
+        return detect_new_agents(detection_text, known_names)
+
+    with ThreadPoolExecutor(max_workers=1, thread_name_prefix=f'detect-{universe_id}') as det_exec:
+        det_future = det_exec.submit(_run_detect)
+        while not det_future.done():
+            yield 'data: {"type":"heartbeat"}\n\n'
             try:
-                agent = generate_agent_profile(
-                    universe_id, name,
-                    universe['premise'],
-                    universe['protagonist_name'],
-                    detection_text[:500]
-                )
-                known_names.add(name)
-                agents.append(agent)
-                yield f'data: {json.dumps({"type": "agent_created", "agent": agent}, ensure_ascii=False)}\n\n'
-            except Exception as e:
-                logger.warning(f"NPC生成失败 [{name}]: {e}")
+                det_future.result(timeout=5)
+            except Exception:
+                break
+
+    try:
+        new_names = det_future.result()
     except Exception as e:
         logger.warning(f"NPC检测失败（已忽略）: {e}")
+        new_names = []
+
+    for name in new_names:
+        def _run_profile(n=name):
+            return generate_agent_profile(
+                universe_id, n,
+                universe['premise'],
+                universe['protagonist_name'],
+                detection_text[:500],
+            )
+
+        try:
+            with ThreadPoolExecutor(max_workers=1, thread_name_prefix=f'profile-{universe_id}') as prof_exec:
+                prof_future = prof_exec.submit(_run_profile)
+                while not prof_future.done():
+                    yield 'data: {"type":"heartbeat"}\n\n'
+                    try:
+                        prof_future.result(timeout=5)
+                    except Exception:
+                        break
+            agent = prof_future.result()
+            known_names.add(name)
+            agents.append(agent)
+            yield f'data: {json.dumps({"type": "agent_created", "agent": agent}, ensure_ascii=False)}\n\n'
+        except Exception as e:
+            logger.warning(f"NPC生成失败 [{name}]: {e}")
 
     # ── 4. NPC 并行反应 ────────────────────────────────────────────────────
     active_agents = agents[:MAX_AGENTS_PER_TURN]
@@ -409,7 +437,7 @@ def stream_turn(
             if remaining <= 0:
                 break
             try:
-                status, agent, reaction = reaction_queue.get(timeout=min(15.0, remaining))
+                status, agent, reaction = reaction_queue.get(timeout=min(5.0, remaining))
                 received_npc += 1
                 if status == 'ok':
                     reaction_data = {
@@ -420,7 +448,7 @@ def stream_turn(
                     agent_reactions_list.append(reaction_data)
                     yield f'data: {json.dumps({"type": "agent_reaction", **reaction_data}, ensure_ascii=False)}\n\n'
             except queue.Empty:
-                yield ': heartbeat\n\n'
+                yield 'data: {"type":"heartbeat"}\n\n'
 
     # ── 5. 分叉检测 ────────────────────────────────────────────────────────
     branch_result = {'is_branch': False}
@@ -491,7 +519,7 @@ def stream_turn(
 def generate_perspective_alt(universe_id: int, node_ids: List[int],
                               new_perspective: str) -> Generator[str, None, None]:
     """为历史节点生成新视角的回溯叙事（SSE 流）。"""
-    yield ': retro-start\n\n'
+    yield 'data: {"type":"retro_start"}\n\n'
 
     universe = UniverseRepository.get(universe_id)
     if not universe:

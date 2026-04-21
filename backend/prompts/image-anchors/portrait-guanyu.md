@@ -16,7 +16,11 @@ Match ONLY the painting technique from the references: semi-realistic painterly 
 
 ## Subject · ACTION POSE
 
-**关羽** — mid-swing of the Green Dragon Crescent Blade (青龙偃月刀). The heavy curved green-bladed polearm is caught slashing diagonally across the frame, the green dragon engraving on the blade catching firelight. His long jet-black chest-length beard is whipped sideways by the motion; his deep emerald green 绿锦战袍 (brocade war robe) and dark cape billow with the swing. Fierce phoenix-eye (丹凤眼) glare locked on an unseen enemy ahead. Dark gold dragon-motif scaled armor visible at chest and pauldrons. Simple green head-wrap. Powerful tanned hands grip the pole — one near the blade, one at the shaft.
+**关羽** — mid-swing of the Green Dragon Crescent Blade (青龙偃月刀).
+
+**CRITICAL FACE**: His skin is a distinctly DEEP RUDDY JUJUBE-RED complexion (丹颜/枣红色) — not normal skin tone, his face is literally reddish-bronze, famous throughout history. This is NON-NEGOTIABLE. Phoenix eyes (丹凤眼) with long heavy eyelids, slow-lidded yet explosive. Long jet-black beard whipped sideways reaching his chest.
+
+The heavy curved green-bladed polearm is caught slashing diagonally across the frame, the green dragon engraving on the blade catching firelight. His deep emerald green 绿锦战袍 (brocade war robe) and dark cape billow with the swing. Dark gold dragon-motif scaled armor visible at chest and pauldrons. Simple green head-wrap. Powerful red-bronze hands grip the pole — one near the blade, one at the shaft.
 
 ## Background · 蜀 Shu faction
 

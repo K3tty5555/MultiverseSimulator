@@ -2,7 +2,7 @@
   <div class="home">
     <ArchiveDeskBackground />
 
-    <HomeNav :app-version="appVersion" />
+    <HomeNav :app-version="appVersion" :empty-state="profileComplete === false" />
 
     <SetupBanner v-if="llmConfigured === false" />
 
@@ -27,6 +27,7 @@
         <RecentEventsPanel
           :events="recentEvents"
           @enter-universe="enterUniverse"
+          @open-universe-list="openNewUniverse"
         />
         <ParallelShelf
           :universes="parallelUniverses"
@@ -69,6 +70,7 @@ const personalNodeCount = ref(0)
 const lastNode = ref(null)
 const starting = ref(false)
 const newChapterDialogOpen = ref(false)
+
 
 const allUniverses = ref([])
 const parallelUniverses = computed(() =>
@@ -174,10 +176,10 @@ function openNewUniverse() { router.push('/universe') }
   grid-template-rows: 60px auto 1fr;
   background: var(--c-parchment);
   position: relative;
-  isolation: isolate;
 }
 
 .loading-full {
+  grid-row: 3;
   display: flex; align-items: center; justify-content: center;
   gap: var(--sp-3);
   color: var(--c-ivory-aged);
@@ -195,42 +197,52 @@ function openNewUniverse() { router.push('/universe') }
 
 /* ── Workspace · 主工作区 Grid 分区 ── */
 .workspace {
+  grid-row: 3;
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  /* primary 足够容纳 badge+title+excerpt+actions；shelf 容纳 160x240 书本 + title + hook 副文 */
-  grid-template-rows: minmax(320px, 38vh) minmax(360px, 42vh);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  /*
+   * 行高策略（1100×760 Electron 窗口适配）：
+   *   第一行（primary + events）：1fr 自然扩展，min 220px
+   *   第二行（shelf）：书封 240px + header 44 + title/padding ≈ 350px
+   *     min 320px 保证书封主体可见，max 36vh 限制大窗口占比
+   */
+  grid-template-rows: minmax(220px, 1fr) minmax(320px, 36vh);
   grid-template-areas:
     "primary events"
     "shelf   shelf";
   gap: var(--sp-8);
-  padding: var(--sp-8) var(--sp-10);
+  padding: var(--sp-6) var(--sp-10) var(--sp-8);
   max-width: 1440px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
   min-height: 0;
-  overflow: hidden;
-  animation: workspace-fade-in var(--duration-slower) var(--ease-out);
-}
-@keyframes workspace-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  /* 兜底：极端小窗口允许整体滚动，正常使用 hidden 保持桌面感 */
+  overflow: auto;
 }
 
 .workspace--empty {
-  grid-template-areas: "empty empty";
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
+  display: flex;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
 }
 
-@media (max-width: 1100px) {
+/* 矮窗口（Electron 760px 高）：压缩 gap/padding，书架保留完整高度 */
+@media (max-height: 820px) {
+  .workspace {
+    padding: var(--sp-3) var(--sp-8) var(--sp-4);
+    gap: var(--sp-3);
+    grid-template-rows: minmax(200px, 1fr) minmax(340px, 34vh);
+  }
+}
+
+/* 窄屏（< 860px）：改单列布局 */
+@media (max-width: 860px) {
   .workspace {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(260px, 36vh) minmax(160px, 22vh) minmax(320px, 36vh);
+    grid-template-rows: minmax(220px, 1fr) minmax(140px, 20vh) minmax(280px, 32vh);
     grid-template-areas:
       "primary"
       "events"
