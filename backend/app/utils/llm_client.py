@@ -108,12 +108,10 @@ class LLMClient:
         # 去掉 markdown 代码块包裹
         cleaned = re.sub(r'^```(?:json)?\s*\n?', '', cleaned, flags=re.IGNORECASE)
         cleaned = re.sub(r'\n?```\s*$', '', cleaned).strip()
-        # 若顶层是数组 [...] 则不做提取（保留完整数组）；否则提取第一个 {...} 块
-        arr_match = re.search(r'^\s*\[', cleaned)
-        if not arr_match:
-            match = re.search(r'\{[\s\S]*\}', cleaned)
-            if match:
-                cleaned = match.group(0)
+        # 提取第一个 {...} 块（防止模型多说废话；贪婪匹配可正确处理嵌套数组）
+        match = re.search(r'\{[\s\S]*\}', cleaned)
+        if match:
+            cleaned = match.group(0)
         result = safe_json_loads(cleaned)
         if result is None:
             raise ValueError(f"LLM 返回的 JSON 格式无效: {cleaned}")
