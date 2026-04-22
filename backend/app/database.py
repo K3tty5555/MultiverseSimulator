@@ -410,25 +410,50 @@ def init_db(db_path: str):
                      _cp['difficulty'], _cp['sort_order'])
                 )
         else:
-            # 迁移：三国乱世扩充节点（3 → 22）及 sort_order 同步
+            # 迁移：三国乱世扩充节点（3 → 22）及 sort_order / available 同步
             _wid = _world_row[0]
-            _existing_cp = {r[0] for r in conn.execute(
-                "SELECT title FROM world_checkpoints WHERE world_id=?", (_wid,)
+            # 已有记录：{title: (id, sort_order)}
+            _existing = {r[0]: (r[1], r[2]) for r in conn.execute(
+                "SELECT title, id, sort_order FROM world_checkpoints WHERE world_id=?", (_wid,)
             )}
+            # 旧标题前缀 → 新完整标题（处理历史遗留短标题，去除"（原有）"后缀匹配）
+            _canonical_titles = {_cp['title']: _cp for _cp in _CHECKPOINTS}
+            _title_without_suffix = {
+                t.replace('（原有）', '').strip(): t
+                for t in _canonical_titles
+            }
+            # 第一步：把旧短标题记录更新为新完整标题 + 正确 sort_order + available
+            for _old_title, (_row_id, _old_sort) in list(_existing.items()):
+                _new_title = _title_without_suffix.get(_old_title)
+                if _new_title and _old_title != _new_title:
+                    _cp = _canonical_titles[_new_title]
+                    conn.execute(
+                        """UPDATE world_checkpoints
+                           SET title=?, available_persona_names=?, sort_order=?
+                           WHERE id=?""",
+                        (_new_title,
+                         json.dumps(_cp['available'], ensure_ascii=False),
+                         _cp['sort_order'], _row_id)
+                    )
+                    _existing[_new_title] = (_row_id, _cp['sort_order'])
+                    del _existing[_old_title]
+            # 第二步：对已有标题更新 available / sort_order；对新标题 INSERT
             for _cp in _CHECKPOINTS:
-                if _cp['title'] not in _existing_cp:
+                _avail_json = json.dumps(_cp['available'], ensure_ascii=False)
+                if _cp['title'] in _existing:
+                    _row_id, _ = _existing[_cp['title']]
+                    conn.execute(
+                        "UPDATE world_checkpoints SET available_persona_names=?, sort_order=? WHERE id=?",
+                        (_avail_json, _cp['sort_order'], _row_id)
+                    )
+                else:
                     conn.execute(
                         """INSERT INTO world_checkpoints
                            (world_id, title, year_label, premise, available_persona_names, difficulty, sort_order)
                            VALUES (?, ?, ?, ?, ?, ?, ?)""",
                         (_wid, _cp['title'], _cp['year_label'], _cp['premise'],
-                         json.dumps(_cp['available'], ensure_ascii=False),
-                         _cp['difficulty'], _cp['sort_order'])
+                         _avail_json, _cp['difficulty'], _cp['sort_order'])
                     )
-                conn.execute(
-                    "UPDATE world_checkpoints SET sort_order=? WHERE world_id=? AND title=?",
-                    (_cp['sort_order'], _wid, _cp['title'])
-                )
 
         # 迁移：移除已废弃的 historical_events 表（功能已被世界入口取代）
         conn.execute("DROP TABLE IF EXISTS historical_events")
