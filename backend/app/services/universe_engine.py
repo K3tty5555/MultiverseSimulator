@@ -450,14 +450,33 @@ def stream_turn(
             except queue.Empty:
                 yield 'data: {"type":"heartbeat"}\n\n'
 
-    # ── 5. 分叉检测 ────────────────────────────────────────────────────────
+    # ── 5. 分叉检测（后台线程+heartbeat，防止 LLM 阻塞主生成器）──────────────
     branch_result = {'is_branch': False}
-    try:
-        branch_result = _detect_branch(universe, thread, narrator_content, protagonist_action)
-        if branch_result.get('is_branch'):
-            yield f'data: {json.dumps({"type": "branch_prompt", "prompt": branch_result.get("prompt"), "options": branch_result.get("options", [])}, ensure_ascii=False)}\n\n'
-    except Exception as e:
-        logger.warning(f"分叉检测失败（已忽略）: {e}")
+    _branch_q: queue.Queue = queue.Queue()
+
+    def _run_detect_branch():
+        try:
+            _branch_q.put(('ok', _detect_branch(universe, thread, narrator_content, protagonist_action)))
+        except Exception as _e:
+            logger.warning(f"分叉检测失败（已忽略）: {_e}")
+            _branch_q.put(('error', {'is_branch': False}))
+
+    threading.Thread(target=_run_detect_branch, daemon=True,
+                     name=f'branch-{universe_id}').start()
+
+    _branch_deadline = time.monotonic() + 40  # _detect_branch 内部 30s 超时 + 10s 缓冲
+    while True:
+        _remaining = _branch_deadline - time.monotonic()
+        if _remaining <= 0:
+            break
+        try:
+            _, branch_result = _branch_q.get(timeout=min(5.0, _remaining))
+            break
+        except queue.Empty:
+            yield 'data: {"type":"heartbeat"}\n\n'
+
+    if branch_result.get('is_branch'):
+        yield f'data: {json.dumps({"type": "branch_prompt", "prompt": branch_result.get("prompt"), "options": branch_result.get("options", [])}, ensure_ascii=False)}\n\n'
 
     # ── 6. 持久化节点（turn_number 由 DB 原子计算，避免并发竞态）─────────────
     try:
