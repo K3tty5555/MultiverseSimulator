@@ -237,10 +237,10 @@ def _extract_entity_states(universe_id: int, narrator_content: str,
                     f"主角：{protagonist_name}\n"
                     f"本回行动：{protagonist_action[:300]}\n"
                     f"本回叙事：{narrator_content[:800]}\n\n"
-                    "提取实体状态变化，返回 JSON 数组（无变化则返回空数组 []）：\n"
-                    '[{"entity": "曹操", "category": "person", '
+                    "提取实体状态变化，返回如下 JSON 对象（无变化则 changes 为空数组）：\n"
+                    '{"changes": [{"entity": "曹操", "category": "person", '
                     '"summary": "被生擒，押于柴桑水寨，命运未卜", '
-                    '"stance": "opposing", "stance_score": -0.9}]\n'
+                    '"stance": "opposing", "stance_score": -0.9}]}\n'
                     "category 只能是：person / faction / location / situation\n"
                     "stance 只能是：supportive / opposing / neutral / unknown\n"
                     "stance_score：-1.0（强烈敌对）到 +1.0（强烈友善），相对于主角"

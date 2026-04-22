@@ -9,7 +9,7 @@
       :view-mode="viewMode"
       :view-modes="viewModes"
       @open-npc="showAgentManager = true"
-      @view-change="viewMode = $event"
+      @view-change="onViewChange"
     />
 
     <!-- Loading（动画播放期间不显示，避免视觉叠加 V4） -->
@@ -191,6 +191,13 @@ const viewModes = [
   { key: 'work',  label: '书房', hint: '世界状态与正文并列' },
 ]
 
+function onViewChange(mode) {
+  viewMode.value = mode
+  if (mode === 'work') {
+    entityPanelRef.value?.refresh()
+  }
+}
+
 const selectedNodeInfo = computed(() => {
   if (!selectedNodeId.value) return ''
   return `#${selectedNodeId.value}`
@@ -263,8 +270,8 @@ function onSelectNode(nodeId) {
 async function onNodeCreated(nodeId) {
   selectedNodeId.value = nodeId
   await loadTree()
-  // 延迟刷新实体状态：等待后台提取完成（通常 3-5s）
-  setTimeout(() => entityPanelRef.value?.refresh(), 5000)
+  // 延迟刷新实体状态：等待后台 LLM 提取完成（通常 5-8s）
+  setTimeout(() => entityPanelRef.value?.refresh(), 8000)
 }
 
 function onPerspectiveChanged(perspective) {
