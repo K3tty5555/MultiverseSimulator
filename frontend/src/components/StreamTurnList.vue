@@ -70,6 +70,22 @@
         <span class="action-label" aria-hidden="true">批</span>
         <span class="action-text">{{ pendingAction }}</span>
       </div>
+
+      <!-- 思维链折叠面板（仅当有思维链内容时显示） -->
+      <div v-if="streamingThinking" class="thinking-panel">
+        <button class="thinking-toggle" @click="$emit('toggle-thinking')">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+            <path v-if="thinkingExpanded" d="M5 2L9 8H1z" transform="rotate(180,5,5)"/>
+            <path v-else d="M5 2L9 8H1z"/>
+          </svg>
+          <span>{{ thinkingExpanded ? '收起' : '展开' }}思维过程</span>
+          <span v-if="streaming && !streamingNarrationDone" class="thinking-live">推演中</span>
+        </button>
+        <div v-if="thinkingExpanded" class="thinking-content">
+          <pre class="thinking-text">{{ streamingThinking }}</pre>
+        </div>
+      </div>
+
       <div v-if="streamingNarrator" class="turn-narrator">
         <div class="narrator-content" v-html="renderMd(streamingNarrator)" />
         <span v-if="streaming && !streamingNarrationDone" class="cursor" aria-hidden="true">|</span>
@@ -110,6 +126,8 @@ defineProps({
   retroLoading: { type: Boolean, default: false },
   streaming: { type: Boolean, default: false },
   streamingNarrator: { type: String, default: '' },
+  streamingThinking: { type: String, default: '' },
+  thinkingExpanded: { type: Boolean, default: false },
   streamingNarrationDone: { type: Boolean, default: false },
   streamingReactions: { type: Array, default: () => [] },
   pendingAction: { type: String, default: '' },
@@ -117,7 +135,7 @@ defineProps({
   renderMd: { type: Function, required: true },
 })
 
-const emit = defineEmits(['fill-action', 'clear-error'])
+const emit = defineEmits(['fill-action', 'clear-error', 'toggle-thinking'])
 
 // 滚动容器 ref，由父组件通过 turnsEl prop 传入外部引用
 const turnsEl = ref(null)
@@ -269,6 +287,54 @@ defineExpose({ turnsEl })
 .streaming-turn .turn-narrator {
   border-color: var(--c-tarnished-gold);
   box-shadow: 0 0 0 1px rgba(168, 137, 78, 0.2), var(--shadow-paper-edge);
+}
+
+/* 思维链折叠面板 */
+.thinking-panel {
+  margin-bottom: var(--sp-2);
+  border: 1px solid var(--c-border-sepia);
+  border-radius: 4px;
+  background: rgba(107, 79, 53, 0.04);
+  overflow: hidden;
+}
+.thinking-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 6px var(--sp-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--c-sepia);
+  opacity: 0.7;
+  text-align: left;
+}
+.thinking-toggle:hover { opacity: 1; }
+.thinking-toggle svg { flex-shrink: 0; }
+.thinking-live {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--c-tarnished-gold);
+  animation: blink 1.2s infinite;
+}
+.thinking-content {
+  border-top: 1px solid var(--c-border-sepia);
+  padding: var(--sp-3);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.thinking-text {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--c-sepia);
+  opacity: 0.75;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
 }
 
 /* 角色反应：眉批风格，竖线引出 */

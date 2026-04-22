@@ -37,6 +37,8 @@ export function useNarrativeStream(
   // ─── 推演流状态 ───────────────────────────────────────────────
   const streaming = ref(false)
   const streamingNarrator = ref('')
+  const streamingThinking = ref('')      // 思维链（reasoning_content）
+  const thinkingExpanded = ref(false)    // 折叠/展开思维链面板
   const streamingNarrationDone = ref(false)
   const streamingReactions = ref([])
   const branchData = ref(null)
@@ -243,6 +245,8 @@ export function useNarrativeStream(
     if (data.type === 'agent_created') {
       emit('agent-created', data.agent)
       showAgentToast(data.agent.name)
+    } else if (data.type === 'thinking_chunk') {
+      streamingThinking.value += data.chunk
     } else if (data.type === 'narrator_chunk') {
       streamingNarrator.value += data.chunk
     } else if (data.type === 'narrator_done') {
@@ -270,6 +274,8 @@ export function useNarrativeStream(
       })
       latestNodeId.value = data.node_id
       streamingNarrator.value = ''
+      streamingThinking.value = ''
+      thinkingExpanded.value = false
       streamingNarrationDone.value = false
       streamingReactions.value = []
       pendingAction.value = ''
@@ -325,6 +331,8 @@ export function useNarrativeStream(
     // 推演流
     streaming,
     streamingNarrator,
+    streamingThinking,
+    thinkingExpanded,
     streamingNarrationDone,
     streamingReactions,
     branchData,

@@ -22,6 +22,8 @@
       :retro-loading="retroLoading"
       :streaming="streaming"
       :streaming-narrator="streamingNarrator"
+      :streaming-thinking="streamingThinking"
+      :thinking-expanded="thinkingExpanded"
       :streaming-narration-done="streamingNarrationDone"
       :streaming-reactions="streamingReactions"
       :pending-action="pendingAction"
@@ -29,6 +31,7 @@
       :render-md="renderMd"
       @fill-action="fillAction"
       @clear-error="streamError = ''"
+      @toggle-thinking="thinkingExpanded = !thinkingExpanded"
     />
 
     <!-- 输入区：历史节点提示 + 分叉选项 + 文本框 + 提交按钮 -->
@@ -84,6 +87,8 @@ const {
   starterActions,
   streaming,
   streamingNarrator,
+  streamingThinking,
+  thinkingExpanded,
   streamingNarrationDone,
   streamingReactions,
   branchData,

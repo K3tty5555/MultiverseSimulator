@@ -51,14 +51,28 @@ class LLMClient:
             kwargs["response_format"] = response_format
 
         response = self.client.chat.completions.create(**kwargs)
-        chunks: List[str] = []
+        content_chunks: List[str] = []
+        reasoning_chunks: List[str] = []
         for chunk in response:
             if not chunk.choices:
                 continue
-            delta = chunk.choices[0].delta.content
-            if delta:
-                chunks.append(delta)
-        content = ''.join(chunks)
+            c = chunk.choices[0].delta.content
+            r = getattr(chunk.choices[0].delta, 'reasoning_content', None)
+            if c:
+                content_chunks.append(c)
+            if r:
+                reasoning_chunks.append(r)
+
+        has_content = bool(content_chunks)
+        has_reasoning = bool(reasoning_chunks)
+        logger.debug("chat() content_len=%d reasoning_len=%d",
+                     sum(len(c) for c in content_chunks),
+                     sum(len(r) for r in reasoning_chunks))
+        if not has_content and has_reasoning:
+            # 模型仅通过 reasoning_content 输出（如部分 Kimi/DeepSeek 配置）
+            content = ''.join(reasoning_chunks)
+        else:
+            content = ''.join(content_chunks)
 
         # 剥离 <think>...</think> 思维链（闭合、未闭合开始标签、孤立结束标签三种情况）
         content = re.sub(r'<think>[\s\S]*?</think>', '', content)
@@ -122,8 +136,14 @@ class LLMClient:
         messages: List[Dict[str, str]],
         temperature: float = 0.7,
         max_tokens: int = 4096
-    ) -> Generator[str, None, None]:
-        """流式输出，生成 delta 文本块，自动跳过 <think> 思维链内容。"""
+    ) -> Generator[tuple, None, None]:
+        """流式输出，yield (is_thinking: bool, chunk: str) 元组。
+
+        - is_thinking=True：思维链内容（reasoning_content 或 <think> 块）
+        - is_thinking=False：正式正文内容
+
+        调用方可选择丢弃思维链或单独展示。
+        """
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
@@ -136,26 +156,36 @@ class LLMClient:
         for chunk in response:
             if not chunk.choices:
                 continue
-            delta = chunk.choices[0].delta.content
-            if not delta:
+            # reasoning_content = 原生思维链字段（Kimi K2 / DeepSeek R1 等）
+            reasoning = getattr(chunk.choices[0].delta, 'reasoning_content', None)
+            content = chunk.choices[0].delta.content
+
+            if reasoning:
+                yield (True, reasoning)
                 continue
-            buf += delta
-            # 逐步扫描缓冲区，过滤 <think>...</think>
+
+            if not content:
+                continue
+
+            buf += content
+            # 扫描缓冲区，区分 <think>...</think> 包裹的思维链与正文
             while buf:
                 if in_think:
                     end = buf.find('</think>')
                     if end == -1:
-                        buf = ''  # 思维链还没结束，继续积累
+                        yield (True, buf)
+                        buf = ''
                         break
+                    yield (True, buf[:end])
                     buf = buf[end + len('</think>'):]
                     in_think = False
                 else:
                     start = buf.find('<think>')
                     if start == -1:
-                        yield buf
+                        yield (False, buf)
                         buf = ''
                         break
                     if start > 0:
-                        yield buf[:start]
+                        yield (False, buf[:start])
                     buf = buf[start + len('<think>'):]
                     in_think = True
