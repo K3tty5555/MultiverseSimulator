@@ -93,10 +93,6 @@ export const initPersonalUniverse = (answers) =>
 export const createUniverseFromPersona = (data) =>
   api.post('/universe/from-persona', data)
 
-/** 获取关联到某角色的宇宙列表 */
-export const getPersonaUniverses = (personaId) =>
-  api.get(`/persona/${personaId}/universes`)
-
 /** 获取宇宙当前实体世界状态 */
 export const getEntityStates = (id) => api.get(`/universe/${id}/entity_states`)
 
@@ -121,6 +117,9 @@ export const reinitPersonalUniverse = () =>
 /** 获取个人宇宙洞察数据（决策统计） */
 export const getPersonalInsights = () =>
   api.get('/universe/personal/insights')
+
+/** 获取内置角色列表（供角色长廊展示） */
+export const listBuiltinPersonas = () => api.get('/worlds/personas')
 
 export const createRetrospectStream = (universeId, nodeIds, perspective) => {
   const params = new URLSearchParams({

@@ -1,9 +1,9 @@
 """世界探索 API Blueprint — GET /worlds, GET /worlds/<id>"""
 
-import json
 import logging
 from flask import Blueprint, jsonify
 from ..database import get_db
+from ..utils.safe_json import safe_json_loads
 
 world_bp = Blueprint('world', __name__)
 logger = logging.getLogger('lifeplanner.world_api')
@@ -51,7 +51,7 @@ def get_world(world_id):
     cp_name_lists = []
     for cp_row in cp_rows:
         try:
-            names = json.loads(cp_row['available_persona_names'] or '[]')
+            names = safe_json_loads(cp_row['available_persona_names'], [], 'cp_persona_names')
         except (json.JSONDecodeError, TypeError):
             names = []
         cp_name_lists.append(names)
@@ -71,7 +71,7 @@ def get_world(world_id):
         for p_row in p_rows:
             p = dict(p_row)
             try:
-                p['meta'] = json.loads(p.get('meta') or '{}')
+                p['meta'] = safe_json_loads(p.get('meta'), {}, 'persona_meta')
             except (json.JSONDecodeError, TypeError):
                 p['meta'] = {}
             persona_map[p['name']] = p
@@ -88,3 +88,24 @@ def get_world(world_id):
 
     world['checkpoints'] = checkpoints
     return jsonify({'world': world})
+
+
+@world_bp.route('/personas', methods=['GET'])
+def list_builtin_personas():
+    """GET /worlds/personas — 返回内置角色列表（供角色长廊展示）。"""
+    with get_db() as conn:
+        rows = conn.execute(
+            """SELECT id, name, bio, avatar_emoji, persona_type, meta
+               FROM personas
+               WHERE persona_type IN ('builtin', 'historical')
+               ORDER BY created_at ASC"""
+        ).fetchall()
+    personas = []
+    for r in rows:
+        p = dict(r)
+        try:
+            p['meta'] = safe_json_loads(p.get('meta'), {}, 'persona_meta')
+        except (json.JSONDecodeError, TypeError):
+            p['meta'] = {}
+        personas.append(p)
+    return jsonify({'personas': personas})

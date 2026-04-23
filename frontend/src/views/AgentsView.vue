@@ -65,8 +65,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApiRequest } from '../composables/useApiRequest.js'
-import { listUniversesWithAgents } from '../api/universe.js'
-import { listPersonas } from '../api/persona.js'
+import { listUniversesWithAgents, listBuiltinPersonas } from '../api/universe.js'
 import AgentCard from '../components/agents/AgentCard.vue'
 import { portraitMap } from '../constants/portraitMap.js'
 
@@ -134,15 +133,13 @@ async function load() {
   try {
     const [univResult, personaResult] = await Promise.allSettled([
       listRequest.execute(),
-      listPersonas(),
+      listBuiltinPersonas(),
     ])
     if (univResult.status === 'fulfilled') {
       universes.value = Array.isArray(univResult.value) ? univResult.value : []
     }
     if (personaResult.status === 'fulfilled') {
-      builtinPersonas.value = (personaResult.value.personas || []).filter(
-        p => p.persona_type === 'builtin'
-      )
+      builtinPersonas.value = personaResult.value.personas || []
     }
   } catch { /* toast */ }
 }

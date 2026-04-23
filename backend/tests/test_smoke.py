@@ -73,12 +73,12 @@ def test_frontend_serve_uses_isfile_not_exists():
 # 4. Blueprint 注册 — 核心路由蓝图完整
 # ─────────────────────────────────────────────────────────────────────────────
 def test_all_blueprints_registered():
-    """app/__init__.py 必须注册所有存活蓝图（profile/settings/persona/universe/world）"""
+    """app/__init__.py 必须注册所有存活蓝图（profile/settings/universe/world）"""
     import app
     init_path = os.path.join(os.path.dirname(app.__file__), "__init__.py")
     with open(init_path, "r", encoding="utf-8") as f:
         init_src = f.read()
-    for bp in ['profile_bp', 'settings_bp', 'persona_bp', 'universe_bp', 'world_bp']:
+    for bp in ['profile_bp', 'settings_bp', 'universe_bp', 'world_bp']:
         assert bp in init_src, f"蓝图 {bp} 未在 app/__init__.py 中注册"
 
 

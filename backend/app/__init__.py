@@ -76,10 +76,9 @@ def create_app(config_class=Config):
     def unsupported_media(e):
         return _jsonify({'error': '请求格式错误，请使用 JSON'}), 415
 
-    from .api import profile_bp, settings_bp, persona_bp, universe_bp, world_bp
+    from .api import profile_bp, settings_bp, universe_bp, world_bp
     app.register_blueprint(profile_bp, url_prefix='/api/profile')
     app.register_blueprint(settings_bp, url_prefix='/api/settings')
-    app.register_blueprint(persona_bp, url_prefix='/api/persona')
     app.register_blueprint(universe_bp, url_prefix='/api/universe')
     app.register_blueprint(world_bp, url_prefix='/api/worlds')
 
