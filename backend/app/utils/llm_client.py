@@ -11,6 +11,28 @@ logger = logging.getLogger('lifeplanner.llm')
 
 from ..config import Config
 
+# 推理模型关键字（model name 含其一即视为推理模型，自动放大 token / timeout 预算）
+# 业务调用方只需按"正文真正需要的"传 max_tokens；推理模型下自动留出思维链预算。
+REASONING_MODEL_KEYWORDS = (
+    'k2.6', 'kimi-thinking',
+    'o1', 'o3',
+    'r1', 'reasoner', 'deepseek-reasoner',
+    'qwq', 'thinking', 'reasoning',
+)
+# 推理模型 token 放大倍率与上限（避免超 API 限制）
+REASONING_TOKEN_MULTIPLIER = 4
+REASONING_TOKEN_CAP = 8192
+# 推理模型 timeout 放大倍率与下限（思维链可能耗时 60-120s）
+REASONING_TIMEOUT_MULTIPLIER = 3
+REASONING_TIMEOUT_FLOOR = 180
+
+
+def _is_reasoning_model(name: Optional[str]) -> bool:
+    if not name:
+        return False
+    n = name.lower()
+    return any(kw in n for kw in REASONING_MODEL_KEYWORDS)
+
 
 class LLMClient:
     def __init__(
@@ -30,7 +52,17 @@ class LLMClient:
         if not self.api_key:
             raise ValueError("LLM_API_KEY 未配置")
 
+        self.is_reasoning = _is_reasoning_model(self.model)
+        if self.is_reasoning:
+            timeout = max(timeout * REASONING_TIMEOUT_MULTIPLIER, REASONING_TIMEOUT_FLOOR)
+
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url, timeout=timeout)
+
+    def _scale_tokens(self, max_tokens: int) -> int:
+        """推理模型下放大 max_tokens 给思维链留预算，并 clip 到 API 上限。"""
+        if not self.is_reasoning:
+            return max_tokens
+        return min(max_tokens * REASONING_TOKEN_MULTIPLIER, REASONING_TOKEN_CAP)
 
     def chat(
         self,
@@ -44,7 +76,7 @@ class LLMClient:
             "model": self.model,
             "messages": messages,
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            "max_tokens": self._scale_tokens(max_tokens),
             "stream": True,
         }
         if response_format:
@@ -148,7 +180,7 @@ class LLMClient:
             model=self.model,
             messages=messages,
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_tokens=self._scale_tokens(max_tokens),
             stream=True
         )
         in_think = False
