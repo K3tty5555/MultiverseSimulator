@@ -175,7 +175,7 @@ def _detect_branch(universe: dict, thread: list, narrator_content: str,
 
         protagonist_name = universe.get('protagonist_name', '主角')
 
-        llm = LLMClient(timeout=180)
+        llm = LLMClient(timeout=60)
         msgs = [
             {
                 "role": "system",
@@ -200,7 +200,7 @@ def _detect_branch(universe: dict, thread: list, narrator_content: str,
                 )
             }
         ]
-        result = llm.chat_json(msgs, temperature=0.4, max_tokens=2000)
+        result = llm.chat_json(msgs, temperature=0.4, max_tokens=600)
         # 兼容旧格式：强制 is_branch=True，保证前端始终展示
         if isinstance(result, dict) and result.get('options'):
             result['is_branch'] = True
@@ -221,7 +221,7 @@ def _extract_entity_states(universe_id: int, narrator_content: str,
     失败时仅记录警告，不影响主流程。
     """
     try:
-        llm = LLMClient(timeout=180)
+        llm = LLMClient(timeout=60)
         msgs = [
             {
                 "role": "system",
@@ -247,7 +247,7 @@ def _extract_entity_states(universe_id: int, narrator_content: str,
                 )
             }
         ]
-        result = llm.chat_json(msgs, temperature=0.2, max_tokens=2000)
+        result = llm.chat_json(msgs, temperature=0.2, max_tokens=800)
         # 兼容模型返回 {"changes": [...]} 或直接返回数组
         changes = result if isinstance(result, list) else result.get('changes', [])
         if not isinstance(changes, list):
@@ -298,12 +298,12 @@ def _compress_agent_memory(agent: dict, new_reaction: str) -> str:
 
     # 触发压缩
     try:
-        llm = LLMClient(timeout=180)
+        llm = LLMClient(timeout=60)
         msgs = [
             {"role": "system", "content": "你是记忆压缩器。将以下角色记忆摘要压缩到300字以内，保留关键事件和立场变化。"},
             {"role": "user", "content": updated}
         ]
-        return llm.chat(msgs, temperature=0.2, max_tokens=2000)
+        return llm.chat(msgs, temperature=0.2, max_tokens=500)
     except Exception:
         # 压缩失败时截断
         return updated[-MEMORY_COMPRESS_THRESHOLD:]
@@ -344,7 +344,7 @@ def stream_turn(
 
     # ── 2. 叙事者：先流式输出（不阻塞等待 NPC 检测）────────────────────────
     narrator_messages = _build_narrator_messages(universe, thread, protagonist_action, locale)
-    llm_narrator = LLMClient(timeout=300)
+    llm_narrator = LLMClient(timeout=120)
     narrator_content = ''
     try:
         for is_thinking, chunk in llm_narrator.stream(narrator_messages, temperature=0.8, max_tokens=600):
@@ -418,8 +418,8 @@ def stream_turn(
             try:
                 msgs = _build_npc_messages(agent, universe, thread,
                                            protagonist_action, narrator_content)
-                llm_npc = LLMClient(timeout=180)
-                reaction = llm_npc.chat(msgs, temperature=0.7, max_tokens=2000)
+                llm_npc = LLMClient(timeout=60)
+                reaction = llm_npc.chat(msgs, temperature=0.7, max_tokens=500)
                 reaction_queue.put(('ok', agent, reaction))
             except Exception as e:
                 logger.warning(f"NPC反应失败 [{agent.get('name')}]: {e}")
@@ -434,7 +434,7 @@ def stream_turn(
         executor.shutdown(wait=False)
 
         received_npc = 0
-        npc_deadline = time.monotonic() + 180  # 推理模型思维链可能需要 60-120s
+        npc_deadline = time.monotonic() + 60
         while received_npc < len(active_agents):
             remaining = npc_deadline - time.monotonic()
             if remaining <= 0:
@@ -554,7 +554,7 @@ def generate_perspective_alt(universe_id: int, node_ids: List[int],
             continue
 
         try:
-            llm = LLMClient(timeout=180)
+            llm = LLMClient(timeout=60)
             protagonist_name = universe['protagonist_name']
             original = node['narrator_content']
             action = node.get('protagonist_action') or ''
@@ -575,7 +575,7 @@ def generate_perspective_alt(universe_id: int, node_ids: List[int],
                 {"role": "system", "content": "你是专业叙事改写者，保持情节不变，只改写视角。"},
                 {"role": "user", "content": prompt}
             ]
-            alt_content = llm.chat(msgs, temperature=0.5, max_tokens=2000)
+            alt_content = llm.chat(msgs, temperature=0.5, max_tokens=500)
             UniverseRepository.update_node_alt(node_id, alt_content)
             yield f'data: {json.dumps({"type": "retro_done", "node_id": node_id, "alt_content": alt_content}, ensure_ascii=False)}\n\n'
         except Exception as e:
