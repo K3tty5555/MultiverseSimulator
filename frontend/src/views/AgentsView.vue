@@ -48,7 +48,6 @@
             v-for="c in filteredAgents"
             :key="`${c.name}:${c.universe_type}`"
             :agent="c"
-            :portrait="portraitMap[c.name] || null"
             @select="openTimeline"
           />
         </div>
@@ -67,7 +66,6 @@ import { useRouter } from 'vue-router'
 import { useApiRequest } from '../composables/useApiRequest.js'
 import { listUniversesWithAgents, listBuiltinPersonas } from '../api/universe.js'
 import AgentCard from '../components/agents/AgentCard.vue'
-import { portraitMap } from '../constants/portraitMap.js'
 
 const router = useRouter()
 const universes = ref([])

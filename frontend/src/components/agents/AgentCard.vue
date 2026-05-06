@@ -8,7 +8,11 @@
     @click="$emit('select', agent)"
     @keydown.enter.prevent="$emit('select', agent)"
   >
-    <AgentPortrait :name="agent.name" :portrait="portrait" />
+    <AgentPortrait
+      :name="agent.name"
+      :universe-type="agent.universe_type"
+      :world-label="agent.world_label"
+    />
 
     <div class="agent-info">
       <div class="agent-name">{{ agent.name }}</div>
@@ -29,7 +33,6 @@ import AgentPortrait from './AgentPortrait.vue'
 
 const props = defineProps({
   agent: { type: Object, required: true },
-  portrait: { type: String, default: null },
 })
 defineEmits(['select'])
 
